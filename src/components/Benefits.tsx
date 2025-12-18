@@ -8,6 +8,7 @@ import {
   ArrowRight 
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 
 const Benefits = () => {
   const benefits = [
@@ -90,13 +91,17 @@ const Benefits = () => {
                 in cancer care worldwide.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button variant="hero" size="lg" className="group">
-                  Join GART Today
-                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                </Button>
-                <Button variant="heroOutline" size="lg">
-                  Learn More
-                </Button>
+                <Link to="/signup">
+                  <Button variant="hero" size="lg" className="group">
+                    Join GART Today
+                    <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                  </Button>
+                </Link>
+                <Link to="/events">
+                  <Button variant="heroOutline" size="lg">
+                    View Events
+                  </Button>
+                </Link>
               </div>
             </div>
           </div>
