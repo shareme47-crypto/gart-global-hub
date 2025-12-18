@@ -1,17 +1,19 @@
 import { Mail, MapPin, Phone, Linkedin, Twitter, Facebook, Youtube } from "lucide-react";
+import { Link } from "react-router-dom";
+import gartLogo from "@/assets/gart-logo.jpeg";
 
 const Footer = () => {
   const quickLinks = [
-    { label: "About Us", href: "#about" },
-    { label: "Our Mission", href: "#mission" },
-    { label: "Member Benefits", href: "#benefits" },
-    { label: "Contact", href: "#contact" },
+    { label: "About Us", href: "/#about" },
+    { label: "Our Mission", href: "/#mission" },
+    { label: "Member Benefits", href: "/#benefits" },
+    { label: "Join GART", href: "/signup" },
   ];
 
   const resources = [
-    { label: "Education Programs", href: "#" },
-    { label: "Research Publications", href: "#" },
-    { label: "Events Calendar", href: "#" },
+    { label: "News", href: "/news" },
+    { label: "Blog", href: "/blog" },
+    { label: "Events", href: "/events" },
     { label: "Career Center", href: "#" },
   ];
 
@@ -29,10 +31,11 @@ const Footer = () => {
           {/* Brand Column */}
           <div className="lg:col-span-1">
             <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 rounded-lg gradient-hero flex items-center justify-center">
-                <span className="text-primary-foreground font-bold text-lg">G</span>
+              <img src={gartLogo} alt="GART Logo" className="w-12 h-12 rounded-full object-cover" />
+              <div>
+                <span className="text-xl font-bold block">G.A.R.T</span>
+                <span className="text-xs text-background/60">Est. 2025</span>
               </div>
-              <span className="text-xl font-bold">GART</span>
             </div>
             <p className="text-background/70 text-sm leading-relaxed mb-6">
               The Global Association of Radiation Therapists — uniting professionals 
@@ -58,12 +61,21 @@ const Footer = () => {
             <ul className="space-y-3">
               {quickLinks.map((link, index) => (
                 <li key={index}>
-                  <a
-                    href={link.href}
-                    className="text-background/70 hover:text-secondary transition-colors duration-300 text-sm"
-                  >
-                    {link.label}
-                  </a>
+                  {link.href.startsWith("/#") ? (
+                    <a
+                      href={link.href}
+                      className="text-background/70 hover:text-secondary transition-colors duration-300 text-sm"
+                    >
+                      {link.label}
+                    </a>
+                  ) : (
+                    <Link
+                      to={link.href}
+                      className="text-background/70 hover:text-secondary transition-colors duration-300 text-sm"
+                    >
+                      {link.label}
+                    </Link>
+                  )}
                 </li>
               ))}
             </ul>
@@ -75,12 +87,21 @@ const Footer = () => {
             <ul className="space-y-3">
               {resources.map((link, index) => (
                 <li key={index}>
-                  <a
-                    href={link.href}
-                    className="text-background/70 hover:text-secondary transition-colors duration-300 text-sm"
-                  >
-                    {link.label}
-                  </a>
+                  {link.href.startsWith("#") ? (
+                    <a
+                      href={link.href}
+                      className="text-background/70 hover:text-secondary transition-colors duration-300 text-sm"
+                    >
+                      {link.label}
+                    </a>
+                  ) : (
+                    <Link
+                      to={link.href}
+                      className="text-background/70 hover:text-secondary transition-colors duration-300 text-sm"
+                    >
+                      {link.label}
+                    </Link>
+                  )}
                 </li>
               ))}
             </ul>
@@ -93,8 +114,8 @@ const Footer = () => {
               <li className="flex items-start gap-3">
                 <MapPin className="w-5 h-5 text-secondary mt-0.5" />
                 <span className="text-background/70 text-sm">
-                  123 Medical Center Drive<br />
-                  Geneva, Switzerland 1211
+                  Global Headquarters<br />
+                  Geneva, Switzerland
                 </span>
               </li>
               <li className="flex items-center gap-3">

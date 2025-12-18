@@ -1,5 +1,8 @@
 import { ArrowRight, Globe, Users, Award } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
+import gartLogo from "@/assets/gart-logo.jpeg";
+import therapistImg from "@/assets/radiation-therapist.jpeg";
 
 const Hero = () => {
   return (
@@ -21,7 +24,16 @@ const Hero = () => {
       />
 
       <div className="container mx-auto px-4 pt-32 pb-20 relative z-10">
-        <div className="max-w-4xl mx-auto text-center">
+        <div className="max-w-5xl mx-auto text-center">
+          {/* Logo */}
+          <div className="mb-8 animate-fade-in-up">
+            <img 
+              src={gartLogo} 
+              alt="GART Logo" 
+              className="w-32 h-32 mx-auto rounded-full object-cover shadow-2xl border-4 border-primary-foreground/20"
+            />
+          </div>
+
           {/* Badge */}
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary-foreground/10 border border-primary-foreground/20 text-primary-foreground/90 text-sm font-medium mb-8 animate-fade-in-up">
             <Globe className="w-4 h-4" />
@@ -29,7 +41,7 @@ const Hero = () => {
           </div>
 
           {/* Main Heading */}
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold text-primary-foreground leading-tight mb-6 animate-fade-in-up animation-delay-100">
+          <h1 className="text-3xl md:text-5xl lg:text-6xl font-extrabold text-primary-foreground leading-tight mb-6 animate-fade-in-up animation-delay-100">
             Global Association of{" "}
             <span className="relative">
               Radiation Therapists
@@ -40,20 +52,24 @@ const Hero = () => {
           </h1>
 
           {/* Subtitle */}
-          <p className="text-lg md:text-xl text-primary-foreground/80 max-w-2xl mx-auto mb-10 animate-fade-in-up animation-delay-200">
+          <p className="text-lg md:text-xl text-primary-foreground/80 max-w-3xl mx-auto mb-10 animate-fade-in-up animation-delay-200">
             Advancing excellence in patient care, education, and innovation for Radiation Therapists, 
-            RTTs, and Dosimetrists across the globe.
+            RTTs, and Dosimetrists. Empowering professionals from student to expert practitioner.
           </p>
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16 animate-fade-in-up animation-delay-300">
-            <Button variant="hero" size="lg" className="group">
-              Become a Member
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </Button>
-            <Button variant="heroOutline" size="lg">
-              Explore Our Mission
-            </Button>
+            <Link to="/signup">
+              <Button variant="hero" size="lg" className="group">
+                Become a Member
+                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </Button>
+            </Link>
+            <a href="#mission">
+              <Button variant="heroOutline" size="lg">
+                Explore Our Mission
+              </Button>
+            </a>
           </div>
 
           {/* Stats */}
@@ -61,7 +77,7 @@ const Hero = () => {
             {[
               { icon: Globe, value: "120+", label: "Countries Represented" },
               { icon: Users, value: "50,000+", label: "Professional Members" },
-              { icon: Award, value: "25+", label: "Years of Excellence" },
+              { icon: Award, value: "Est. 2025", label: "Founded" },
             ].map((stat, index) => (
               <div
                 key={index}
