@@ -114,8 +114,8 @@ const Footer = () => {
               <li className="flex items-start gap-3">
                 <MapPin className="w-5 h-5 text-secondary mt-0.5" />
                 <span className="text-background/70 text-sm">
-                  Global Headquarters<br />
-                  Geneva, Switzerland
+                  Headquarters<br />
+                  Varanasi, India
                 </span>
               </li>
               <li className="flex items-center gap-3">
@@ -130,10 +130,10 @@ const Footer = () => {
               <li className="flex items-center gap-3">
                 <Phone className="w-5 h-5 text-secondary" />
                 <a
-                  href="tel:+41221234567"
+                  href="tel:88888888"
                   className="text-background/70 hover:text-secondary transition-colors text-sm"
                 >
-                  +41 22 123 4567
+                  88888888
                 </a>
               </li>
             </ul>
