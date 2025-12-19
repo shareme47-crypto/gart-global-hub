@@ -1,19 +1,23 @@
 import { useState } from "react";
-import { Menu, X } from "lucide-react";
+import { Menu, X, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link, useLocation } from "react-router-dom";
 import gartLogo from "@/assets/gart-logo.jpeg";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [membershipOpen, setMembershipOpen] = useState(false);
   const location = useLocation();
 
   const navLinks = [
     { label: "About", href: "/#about" },
-    { label: "Mission", href: "/#mission" },
-    { label: "News", href: "/news" },
-    { label: "Blog", href: "/blog" },
-    { label: "Events", href: "/events" },
+    { label: "Education", href: "/#mission" },
+    { label: "Resources", href: "/blog" },
+  ];
+
+  const membershipLinks = [
+    { label: "Join GART", href: "/signup" },
+    { label: "Member Benefits", href: "/#benefits" },
   ];
 
   const isActive = (href: string) => {
@@ -22,27 +26,27 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 glass">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-card shadow-sm">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-3">
-            <img src={gartLogo} alt="GART Logo" className="w-12 h-12 rounded-full object-cover shadow-md" />
+            <img src={gartLogo} alt="GART Logo" className="w-12 h-12 rounded-full object-cover" />
             <div className="flex flex-col">
-              <span className="text-lg font-bold text-foreground leading-tight">G.A.R.T</span>
-              <span className="text-[10px] text-muted-foreground leading-tight hidden sm:block">Global Association of Radiation Therapists</span>
+              <span className="text-base font-bold text-primary leading-tight">Global Association</span>
+              <span className="text-sm text-primary leading-tight">of Radiation Therapists</span>
             </div>
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center gap-6">
+          <div className="hidden lg:flex items-center gap-8">
             {navLinks.map((link) => (
               link.href.startsWith("/#") ? (
                 <a
                   key={link.label}
                   href={link.href}
                   className={`text-sm font-medium transition-colors duration-300 ${
-                    isActive(link.href) ? "text-primary" : "text-muted-foreground hover:text-primary"
+                    isActive(link.href) ? "text-primary" : "text-foreground hover:text-primary"
                   }`}
                 >
                   {link.label}
@@ -52,19 +56,56 @@ const Navbar = () => {
                   key={link.label}
                   to={link.href}
                   className={`text-sm font-medium transition-colors duration-300 ${
-                    isActive(link.href) ? "text-primary" : "text-muted-foreground hover:text-primary"
+                    isActive(link.href) ? "text-primary" : "text-foreground hover:text-primary"
                   }`}
                 >
                   {link.label}
                 </Link>
               )
             ))}
+            
+            {/* Membership Dropdown */}
+            <div 
+              className="relative"
+              onMouseEnter={() => setMembershipOpen(true)}
+              onMouseLeave={() => setMembershipOpen(false)}
+            >
+              <button className="flex items-center gap-1 text-sm font-medium text-foreground hover:text-primary transition-colors">
+                Membership
+                <ChevronDown className="w-4 h-4" />
+              </button>
+              {membershipOpen && (
+                <div className="absolute top-full left-0 mt-2 w-48 bg-card rounded-md shadow-lg border border-border py-2">
+                  {membershipLinks.map((link) => (
+                    link.href.startsWith("/#") ? (
+                      <a
+                        key={link.label}
+                        href={link.href}
+                        className="block px-4 py-2 text-sm text-foreground hover:bg-accent hover:text-primary transition-colors"
+                      >
+                        {link.label}
+                      </a>
+                    ) : (
+                      <Link
+                        key={link.label}
+                        to={link.href}
+                        className="block px-4 py-2 text-sm text-foreground hover:bg-accent hover:text-primary transition-colors"
+                      >
+                        {link.label}
+                      </Link>
+                    )
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
 
-          {/* CTA Button */}
+          {/* Contact Button */}
           <div className="hidden lg:block">
             <Link to="/signup">
-              <Button size="default">Join GART</Button>
+              <Button className="bg-primary hover:bg-primary-foreground hover:text-primary border border-primary">
+                Contact
+              </Button>
             </Link>
           </div>
 
@@ -86,7 +127,7 @@ const Navbar = () => {
                   <a
                     key={link.label}
                     href={link.href}
-                    className="text-muted-foreground hover:text-primary font-medium transition-colors py-2"
+                    className="text-foreground hover:text-primary font-medium transition-colors py-2"
                     onClick={() => setIsOpen(false)}
                   >
                     {link.label}
@@ -95,15 +136,39 @@ const Navbar = () => {
                   <Link
                     key={link.label}
                     to={link.href}
-                    className="text-muted-foreground hover:text-primary font-medium transition-colors py-2"
+                    className="text-foreground hover:text-primary font-medium transition-colors py-2"
                     onClick={() => setIsOpen(false)}
                   >
                     {link.label}
                   </Link>
                 )
               ))}
+              <div className="border-t border-border pt-4">
+                <span className="text-sm font-semibold text-muted-foreground mb-2 block">Membership</span>
+                {membershipLinks.map((link) => (
+                  link.href.startsWith("/#") ? (
+                    <a
+                      key={link.label}
+                      href={link.href}
+                      className="text-foreground hover:text-primary font-medium transition-colors py-2 block"
+                      onClick={() => setIsOpen(false)}
+                    >
+                      {link.label}
+                    </a>
+                  ) : (
+                    <Link
+                      key={link.label}
+                      to={link.href}
+                      className="text-foreground hover:text-primary font-medium transition-colors py-2 block"
+                      onClick={() => setIsOpen(false)}
+                    >
+                      {link.label}
+                    </Link>
+                  )
+                ))}
+              </div>
               <Link to="/signup" onClick={() => setIsOpen(false)}>
-                <Button className="mt-2 w-full">Join GART</Button>
+                <Button className="mt-2 w-full">Contact</Button>
               </Link>
             </div>
           </div>
