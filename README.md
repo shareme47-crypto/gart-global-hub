@@ -71,3 +71,13 @@ Yes, you can!
 To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
 
 Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+
+## Deploying on Render
+
+A Render blueprint is included at the repository root (`render.yaml`) to deploy this app as a static site from `gart-global-hub`.
+
+1. Push this repo to GitHub/GitLab and choose **New + → Blueprint** in Render.
+2. Point Render to the repo and keep the default branch; it will pick up `render.yaml`.
+3. Build command: `npm ci && npm run build` (publish directory: `dist`, root directory: `gart-global-hub`).
+4. The blueprint already sets up SPA rewrites (`/* → /index.html`) and uses Node 20.
+5. Add your custom domain(s) in Render (e.g., `gart.org.in`, `www.gart.org.in`) and update DNS when ready.
