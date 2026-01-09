@@ -121,10 +121,10 @@ const Footer = () => {
               <li className="flex items-center gap-3">
                 <Mail className="w-5 h-5 text-secondary" />
                 <a
-                  href="mailto:info@gart.org"
+                  href="mailto:info@gart.org.in"
                   className="text-background/70 hover:text-secondary transition-colors text-sm"
                 >
-                  info@gart.org
+                  info@gart.org.in
                 </a>
               </li>
               <li className="flex items-center gap-3">
