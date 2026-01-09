@@ -27,7 +27,7 @@ const About = () => {
             Who We Are
           </h3>
           <p className="text-lg text-muted-foreground leading-relaxed">
-            The Global Academy of Radiation Therapists (GART) is an independent, non-governmental, 
+            The Global Association of Radiation Therapists (GART) is an independent, non-governmental, 
             international professional association established in 2025. We represent Radiation Therapists, 
             Radiographers, Nuclear Medicine professionals, and allied health professionals involved in 
             radiation sciences and cancer care globally. Our foundation is built upon the pillars of 

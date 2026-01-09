@@ -204,13 +204,13 @@ const SupportHub = () => {
                 <h2 className="text-3xl md:text-4xl font-bold text-foreground">
                   Skill Development
                 </h2>
-                <p className="text-muted-foreground">Continuous skill upgradation and professional growth</p>
+                <p className="text-muted-foreground">Continuous skill enhancement and professional growth</p>
               </div>
             </div>
 
             <p className="text-lg text-muted-foreground leading-relaxed mb-8 max-w-3xl">
               Enhance your capabilities through workshops, expert-led training sessions, 
-              case discussions, and continuous skill upgradation programs designed for 
+              case discussions, and continuous professional development programmes designed for 
               modern radiation therapy practice.
             </p>
 
