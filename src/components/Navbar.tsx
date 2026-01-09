@@ -13,6 +13,7 @@ const Navbar = () => {
     { label: "About", href: "/#about" },
     { label: "Education", href: "/#mission" },
     { label: "Support Hub", href: "/support-hub" },
+    { label: "Social Welfare", href: "/social-welfare" },
     { label: "Resources", href: "/blog" },
   ];
 
@@ -67,22 +68,27 @@ const Navbar = () => {
             
             {/* Membership Dropdown */}
             <div 
-              className="relative"
+              className="relative group"
               onMouseEnter={() => setMembershipOpen(true)}
               onMouseLeave={() => setMembershipOpen(false)}
             >
-              <button className="flex items-center gap-1 text-sm font-medium text-foreground hover:text-primary transition-colors">
+              <button className="flex items-center gap-1 text-sm font-medium text-foreground hover:text-primary transition-colors py-2">
                 Membership
-                <ChevronDown className="w-4 h-4" />
+                <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${membershipOpen ? 'rotate-180' : ''}`} />
               </button>
-              {membershipOpen && (
-                <div className="absolute top-full left-0 mt-2 w-48 bg-card rounded-md shadow-lg border border-border py-2">
+              <div 
+                className={`absolute top-full left-0 pt-2 transition-all duration-200 ${
+                  membershipOpen ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible -translate-y-2'
+                }`}
+              >
+                <div className="w-48 bg-card rounded-md shadow-lg border border-border py-2 z-50">
                   {membershipLinks.map((link) => (
                     link.href.startsWith("/#") ? (
                       <a
                         key={link.label}
                         href={link.href}
                         className="block px-4 py-2 text-sm text-foreground hover:bg-accent hover:text-primary transition-colors"
+                        onClick={() => setMembershipOpen(false)}
                       >
                         {link.label}
                       </a>
@@ -91,13 +97,14 @@ const Navbar = () => {
                         key={link.label}
                         to={link.href}
                         className="block px-4 py-2 text-sm text-foreground hover:bg-accent hover:text-primary transition-colors"
+                        onClick={() => setMembershipOpen(false)}
                       >
                         {link.label}
                       </Link>
                     )
                   ))}
                 </div>
-              )}
+              </div>
             </div>
           </div>
 
