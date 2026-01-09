@@ -30,7 +30,7 @@ const Navbar = () => {
       ]
     },
     { label: "Social Welfare", href: "/social-welfare" },
-    { label: "Advocacy", href: "/#about" },
+    { label: "Advocacy", href: "/advocacy" },
     { label: "Contact", href: "/signup" },
   ];
 
