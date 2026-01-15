@@ -19,7 +19,7 @@ const Navbar = () => {
         { label: "Member Benefits", href: "/#benefits" },
       ]
     },
-    { label: "Education", href: "/#mission" },
+    { label: "Education", href: "/education" },
     { label: "RTT Professional Support", href: "/support-hub" },
     { label: "Meetings", href: "/events" },
     { 
