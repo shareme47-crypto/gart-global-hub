@@ -1,13 +1,14 @@
 import { useState } from "react";
 import { Menu, X, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import gartLogo from "@/assets/gart-logo-new.jpeg";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const location = useLocation();
+  const navigate = useNavigate();
 
   const navLinks = [
     { label: "Home", href: "/" },
@@ -40,12 +41,37 @@ const Navbar = () => {
     return location.pathname === href;
   };
 
+  const handleHashLink = (href: string, onComplete?: () => void) => {
+    const hash = href.slice(2); // Remove "/#"
+    
+    if (location.pathname === "/") {
+      // Already on home page, just scroll
+      const element = document.getElementById(hash);
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth" });
+      }
+    } else {
+      // Navigate to home page first, then scroll
+      navigate("/");
+      setTimeout(() => {
+        const element = document.getElementById(hash);
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth" });
+        }
+      }, 100);
+    }
+    onComplete?.();
+  };
+
   const renderLink = (href: string, label: string, className: string, onClick?: () => void) => {
     if (href.startsWith("/#")) {
       return (
-        <a href={href} className={className} onClick={onClick}>
+        <button 
+          className={className} 
+          onClick={() => handleHashLink(href, onClick)}
+        >
           {label}
-        </a>
+        </button>
       );
     }
     return (
