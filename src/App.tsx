@@ -11,6 +11,7 @@ import Signup from "./pages/Signup";
 import SupportHub from "./pages/SupportHub";
 import SocialWelfare from "./pages/SocialWelfare";
 import Advocacy from "./pages/Advocacy";
+import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -30,6 +31,7 @@ const App = () => (
           <Route path="/support-hub" element={<SupportHub />} />
           <Route path="/social-welfare" element={<SocialWelfare />} />
           <Route path="/advocacy" element={<Advocacy />} />
+          <Route path="/contact" element={<Contact />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
