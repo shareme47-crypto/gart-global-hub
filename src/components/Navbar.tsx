@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Menu, X, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link, useLocation } from "react-router-dom";
-import gartLogo from "@/assets/gart-logo.jpeg";
+import gartLogo from "@/assets/gart-logo-new.jpeg";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -31,7 +31,7 @@ const Navbar = () => {
     },
     { label: "Social Welfare", href: "/social-welfare" },
     { label: "Advocacy", href: "/advocacy" },
-    { label: "Contact", href: "/signup" },
+    { label: "Contact", href: "/contact" },
   ];
 
   const isActive = (href: string) => {

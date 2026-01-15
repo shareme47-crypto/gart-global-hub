@@ -1,6 +1,6 @@
 import { Mail, MapPin, Phone, Linkedin, Twitter, Facebook, Youtube } from "lucide-react";
 import { Link } from "react-router-dom";
-import gartLogo from "@/assets/gart-logo.jpeg";
+import gartLogo from "@/assets/gart-logo-new.jpeg";
 
 const Footer = () => {
   const quickLinks = [
@@ -112,14 +112,16 @@ const Footer = () => {
             <h4 className="font-bold text-lg mb-6">Contact Us</h4>
             <ul className="space-y-4">
               <li className="flex items-start gap-3">
-                <MapPin className="w-5 h-5 text-secondary mt-0.5" />
-                <span className="text-background/70 text-sm">
-                  Headquarters<br />
-                  Varanasi, India
+                <MapPin className="w-5 h-5 text-secondary mt-0.5 flex-shrink-0" />
+                <span className="text-background/70 text-sm leading-relaxed">
+                  FLAT NO-1004, 3RD FLOOR<br />
+                  PLOT NO GH-18, B/10, ROYCE, VAISHALI<br />
+                  SECTOR-3, I E SAHIBABAD, Ghaziabad<br />
+                  Uttar Pradesh, 201010
                 </span>
               </li>
               <li className="flex items-center gap-3">
-                <Mail className="w-5 h-5 text-secondary" />
+                <Mail className="w-5 h-5 text-secondary flex-shrink-0" />
                 <a
                   href="mailto:info@gart.org.in"
                   className="text-background/70 hover:text-secondary transition-colors text-sm"
@@ -128,12 +130,12 @@ const Footer = () => {
                 </a>
               </li>
               <li className="flex items-center gap-3">
-                <Phone className="w-5 h-5 text-secondary" />
+                <Phone className="w-5 h-5 text-secondary flex-shrink-0" />
                 <a
-                  href="tel:88888888"
+                  href="tel:+918447234938"
                   className="text-background/70 hover:text-secondary transition-colors text-sm"
                 >
-                  88888888
+                  +91-8447234938
                 </a>
               </li>
             </ul>
