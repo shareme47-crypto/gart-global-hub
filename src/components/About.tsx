@@ -1,4 +1,3 @@
-import { ChevronDown } from "lucide-react";
 import {
   Accordion,
   AccordionContent,
@@ -7,6 +6,16 @@ import {
 } from "@/components/ui/accordion";
 
 const About = () => {
+  // Function to render GART with colored letters
+  const renderColoredGART = () => (
+    <span className="font-bold">
+      <span className="text-primary">G</span>lobal{" "}
+      <span className="text-primary">A</span>ssociation of{" "}
+      <span className="text-primary">R</span>adiation{" "}
+      <span className="text-primary">T</span>herapists
+    </span>
+  );
+
   return (
     <section id="about" className="py-24 bg-background">
       <div className="container mx-auto px-4">
@@ -27,11 +36,10 @@ const About = () => {
             Who We Are
           </h3>
           <p className="text-lg text-muted-foreground leading-relaxed">
-            The Global Association of Radiation Therapists (GART) is an independent, non-governmental, 
-            international professional association established in 2025. We represent Radiation Therapists, 
-            Radiographers, Nuclear Medicine professionals, and allied health professionals involved in 
-            radiation sciences and cancer care globally. Our foundation is built upon the pillars of 
-            education, collaboration, research, professional leadership, and the advancement of global 
+            The {renderColoredGART()} (<span className="text-primary font-bold">GART</span>) is an independent, international, 
+            non-governmental professional body founded in 2026. We represent Radiation Therapists and allied health 
+            experts across the radiation sciences and cancer care. Our foundation is built upon pillars of 
+            education, collaboration, research, and professional leadership and advancement of global 
             standards in patient care.
           </p>
         </div>
@@ -45,9 +53,8 @@ const About = () => {
               </h3>
               <p className="text-lg text-muted-foreground leading-relaxed">
                 GART's mission is to advance education, professional practice, collaboration, research, 
-                and service across radiation therapy, radiology, diagnostic imaging, and nuclear medicine 
-                allied health professions. We are committed to excellence in cancer care and uphold our 
-                societal responsibility to improve patient outcomes worldwide.
+                and service across radiation allied health professions. We are committed to excellence 
+                in cancer care and uphold our societal responsibility to improve patient outcomes worldwide.
               </p>
             </div>
             <div className="lg:mt-12">
@@ -55,30 +62,22 @@ const About = () => {
                 <AccordionItem value="mission-commitments" className="border border-border rounded-lg bg-card shadow-sm">
                   <AccordionTrigger className="px-6 py-4 hover:no-underline hover:bg-muted/50 rounded-lg">
                     <span className="text-left font-semibold text-foreground">
-                      To fulfil this mission, GART is committed to:
+                      Mission Objectives
                     </span>
                   </AccordionTrigger>
                   <AccordionContent className="px-6 pb-4">
                     <ul className="space-y-3 text-muted-foreground">
                       <li className="flex items-start gap-3">
                         <span className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0" />
-                        <span>Global standards in education, ethics, and professional practice</span>
+                        <span>Global standards, ethics, and excellence in professional practice</span>
                       </li>
                       <li className="flex items-start gap-3">
                         <span className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0" />
-                        <span>Excellence and lifelong learning</span>
+                        <span>Lifelong learning through education, research, and innovation</span>
                       </li>
                       <li className="flex items-start gap-3">
                         <span className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0" />
-                        <span>Global knowledge exchange and collaboration</span>
-                      </li>
-                      <li className="flex items-start gap-3">
-                        <span className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0" />
-                        <span>Professional leadership and multidisciplinary teamwork</span>
-                      </li>
-                      <li className="flex items-start gap-3">
-                        <span className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0" />
-                        <span>Research, innovation, and societal impact</span>
+                        <span>International collaboration, leadership, and multidisciplinary teamwork</span>
                       </li>
                     </ul>
                   </AccordionContent>
@@ -96,11 +95,10 @@ const About = () => {
                 Our Vision
               </h3>
               <p className="text-lg text-muted-foreground leading-relaxed">
-                We envision a world where radiation therapy and allied health professionals are globally 
-                empowered, professionally united, and recognized as leaders in cancer care. Through equity, 
-                compassion, and excellence, we strive to improve cancer outcomes for all patients, 
-                regardless of geography or circumstance. GART aspires to be the foremost voice for 
-                professional advancement, ethical leadership, and patient-centered care in the radiation sciences.
+                A world where radiation allied health professionals are empowered, united, and recognised 
+                as leaders in cancer care. Guided by equity, compassion, and excellence, GART strives to 
+                be the leading global voice for professional advancement, ethical leadership, and 
+                patient-centred practice in the radiation sciences.
               </p>
             </div>
             <div className="lg:mt-12">
@@ -115,23 +113,15 @@ const About = () => {
                     <ul className="space-y-3 text-muted-foreground">
                       <li className="flex items-start gap-3">
                         <span className="w-2 h-2 bg-secondary rounded-full mt-2 flex-shrink-0" />
-                        <span>Advance global education and lifelong professional development</span>
+                        <span>Advance global education, standards, and ethical leadership</span>
                       </li>
                       <li className="flex items-start gap-3">
                         <span className="w-2 h-2 bg-secondary rounded-full mt-2 flex-shrink-0" />
-                        <span>Foster national and international collaboration</span>
+                        <span>Foster collaboration, research, and innovation</span>
                       </li>
                       <li className="flex items-start gap-3">
                         <span className="w-2 h-2 bg-secondary rounded-full mt-2 flex-shrink-0" />
-                        <span>Promote research, innovation, and evidence-based practice</span>
-                      </li>
-                      <li className="flex items-start gap-3">
-                        <span className="w-2 h-2 bg-secondary rounded-full mt-2 flex-shrink-0" />
-                        <span>Uphold professional standards and ethical leadership</span>
-                      </li>
-                      <li className="flex items-start gap-3">
-                        <span className="w-2 h-2 bg-secondary rounded-full mt-2 flex-shrink-0" />
-                        <span>Serve patients and communities through cancer awareness and support</span>
+                        <span>Serve patients and communities through awareness and professional excellence</span>
                       </li>
                     </ul>
                   </AccordionContent>
@@ -144,38 +134,25 @@ const About = () => {
         {/* Core Values Section */}
         <div className="max-w-4xl mx-auto">
           <h3 className="text-2xl md:text-3xl font-bold text-foreground mb-6 border-l-4 border-secondary pl-4">
-            Core Values
+            Our Core Values
           </h3>
-          <Accordion type="single" collapsible className="w-full">
-            <AccordionItem value="core-values" className="border border-border rounded-lg bg-card shadow-sm">
-              <AccordionTrigger className="px-6 py-4 hover:no-underline hover:bg-muted/50 rounded-lg">
-                <span className="text-left font-semibold text-foreground text-lg">
-                  Our Core Values
-                </span>
-              </AccordionTrigger>
-              <AccordionContent className="px-6 pb-6">
-                <div className="grid sm:grid-cols-2 gap-4">
-                  {[
-                    { title: "Integrity & Ethical Practice", description: "Upholding the highest standards of honesty and professional ethics in all endeavors." },
-                    { title: "Professional Excellence", description: "Striving for the highest quality in education, practice, and patient care." },
-                    { title: "Collaboration & Mutual Respect", description: "Working together across disciplines and borders with respect for diverse perspectives." },
-                    { title: "Compassion & Human Dignity", description: "Treating every patient and colleague with empathy, care, and respect." },
-                    { title: "Inclusivity & Equity", description: "Ensuring equal access to opportunities and resources for all professionals globally." },
-                    { title: "Social Responsibility", description: "Contributing to the well-being of communities and advancing public health." },
-                    { title: "Commitment to Service", description: "Dedicating ourselves to serving patients, the profession, and society at large." },
-                  ].map((value, index) => (
-                    <div
-                      key={index}
-                      className="p-4 rounded-lg bg-muted/30 border border-border/50 hover:border-primary/30 transition-colors"
-                    >
-                      <h4 className="font-semibold text-foreground mb-2">{value.title}</h4>
-                      <p className="text-sm text-muted-foreground">{value.description}</p>
-                    </div>
-                  ))}
-                </div>
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {[
+              "Integrity, ethics, and professional excellence",
+              "Collaboration, mutual respect, and teamwork",
+              "Compassion, empathy, and human dignity",
+              "Inclusivity, equity, and social responsibility",
+              "Commitment to service for patients, profession, and society",
+            ].map((value, index) => (
+              <div
+                key={index}
+                className="p-4 rounded-lg bg-muted/30 border border-border/50 hover:border-primary/30 transition-colors flex items-center gap-3"
+              >
+                <span className="w-3 h-3 bg-gradient-to-br from-primary to-secondary rounded-full flex-shrink-0" />
+                <p className="text-muted-foreground">{value}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </section>
