@@ -16,9 +16,9 @@ const Hero = () => {
         <div className="max-w-4xl mx-auto text-center">
           {/* Main Heading */}
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-primary-foreground leading-tight mb-6 animate-fade-in-up tracking-wide">
-            GLOBAL ASSOCIATION OF
+            <span className="text-orange-400">G</span>LOBAL <span className="text-orange-400">A</span>SSOCIATION OF
             <br />
-            RADIATION THERAPISTS
+            <span className="text-orange-400">R</span>ADIATION <span className="text-orange-400">T</span>HERAPISTS
           </h1>
 
           {/* Subtitle */}
