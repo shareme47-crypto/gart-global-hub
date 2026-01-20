@@ -15,10 +15,21 @@ const Hero = () => {
       <div className="container mx-auto px-4 pt-40 pb-24 relative z-10">
         <div className="max-w-4xl mx-auto text-center">
           {/* Main Heading */}
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-primary-foreground leading-tight mb-6 animate-fade-in-up tracking-wide">
-            <span className="text-orange-400">G</span>LOBAL <span className="text-orange-400">A</span>SSOCIATION OF
-            <br />
-            <span className="text-orange-400">R</span>ADIATION <span className="text-orange-400">T</span>HERAPISTS
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-primary-foreground leading-tight mb-6 animate-fade-in-up tracking-wide">
+            <span className="block">
+              <span className="text-[1.1em] md:text-[1.1em] align-baseline">G</span>
+              <span className="text-[0.9em]">LOBAL</span>
+              {" "}
+              <span className="text-[1.1em] md:text-[1.1em] align-baseline">A</span>
+              <span className="text-[0.9em]">SSOCIATION OF</span>
+            </span>
+            <span className="block">
+              <span className="text-[1.1em] md:text-[1.1em] align-baseline">R</span>
+              <span className="text-[0.9em]">ADIATION</span>
+              {" "}
+              <span className="text-[1.1em] md:text-[1.1em] align-baseline">T</span>
+              <span className="text-[0.9em]">HERAPISTS</span>
+            </span>
           </h1>
 
           {/* Subtitle */}
