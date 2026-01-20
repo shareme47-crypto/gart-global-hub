@@ -89,8 +89,8 @@ const Navbar = () => {
           <Link to="/" className="flex items-center gap-3 flex-shrink-0">
             <img src={gartLogo} alt="GART Logo" className="w-12 h-12 rounded-full object-cover" />
             <div className="flex flex-col">
-              <span className="text-base font-bold text-primary leading-tight">Global Association</span>
-              <span className="text-sm text-primary leading-tight">of Radiation Therapists</span>
+              <span className="text-lg font-bold text-primary leading-tight tracking-wider">G.A.R.T</span>
+              <span className="text-xs text-muted-foreground leading-tight">Global Association of Radiation Therapists</span>
             </div>
           </Link>
 
