@@ -9,7 +9,12 @@ import {
   ArrowRight,
   Target,
   Eye,
-  Sparkles
+  Sparkles,
+  Users,
+  Stethoscope,
+  Heart,
+  Check,
+  Star
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
@@ -23,6 +28,46 @@ import {
 
 const Benefits = () => {
   const [openDialog, setOpenDialog] = useState<string | null>(null);
+  const [hoveredCategory, setHoveredCategory] = useState<string | null>(null);
+
+  const membershipCategories = [
+    {
+      id: "student",
+      icon: GraduationCap,
+      title: "Student Member",
+      subtitle: "Radiotherapy Technology Students",
+      fee: "From ₹200/year",
+      color: "from-blue-500 to-cyan-500",
+      highlights: ["Educational webinars", "Reduced event fees", "Digital certificate"],
+    },
+    {
+      id: "allied",
+      icon: Stethoscope,
+      title: "Allied Health Professional",
+      subtitle: "Radiographers, Nuclear Medicine Tech",
+      fee: "₹1000 for 5 years",
+      color: "from-green-500 to-emerald-500",
+      highlights: ["Full CPD access", "Research collaboration", "Global networking"],
+    },
+    {
+      id: "therapist",
+      icon: Users,
+      title: "Radiation Therapist",
+      subtitle: "Qualified & Practicing RTTs",
+      fee: "₹1000 for 5 years",
+      color: "from-purple-500 to-violet-500",
+      highlights: ["Advanced certifications", "Leadership roles", "Priority access"],
+    },
+    {
+      id: "volunteer",
+      icon: Heart,
+      title: "Volunteer Member",
+      subtitle: "Support Our Mission",
+      fee: "From ₹500 or donation",
+      color: "from-orange-500 to-red-500",
+      highlights: ["Community initiatives", "Recognition & certificate", "Healthcare networking"],
+    },
+  ];
 
   const benefits = [
     {
@@ -130,6 +175,82 @@ const Benefits = () => {
             As a GART member, you gain access to resources and opportunities that 
             will elevate your career and enhance patient care.
           </p>
+        </div>
+
+        {/* Membership Categories - Enhanced Interactive Cards */}
+        <div className="max-w-6xl mx-auto mb-20">
+          <div className="text-center mb-10">
+            <h3 className="text-2xl md:text-3xl font-bold text-foreground mb-3">
+              Choose Your Membership
+            </h3>
+            <p className="text-muted-foreground">Select the category that fits your professional journey</p>
+          </div>
+          
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            {membershipCategories.map((category) => {
+              const Icon = category.icon;
+              const isHovered = hoveredCategory === category.id;
+              return (
+                <Link 
+                  key={category.id}
+                  to="/signup"
+                  className="group relative"
+                  onMouseEnter={() => setHoveredCategory(category.id)}
+                  onMouseLeave={() => setHoveredCategory(null)}
+                >
+                  <div className={`relative p-6 rounded-2xl border-2 transition-all duration-500 overflow-hidden h-full ${
+                    isHovered 
+                      ? "border-primary shadow-2xl scale-[1.02]" 
+                      : "border-border bg-card hover:border-primary/50"
+                  }`}>
+                    {/* Animated gradient background */}
+                    <div className={`absolute inset-0 bg-gradient-to-br ${category.color} opacity-0 transition-opacity duration-500 ${isHovered ? "opacity-10" : ""}`} />
+                    
+                    {/* Floating particles on hover */}
+                    <div className={`absolute top-4 right-4 w-2 h-2 rounded-full bg-gradient-to-r ${category.color} transition-all duration-700 ${isHovered ? "opacity-100 scale-100" : "opacity-0 scale-0"}`} />
+                    <div className={`absolute bottom-8 right-8 w-3 h-3 rounded-full bg-gradient-to-r ${category.color} transition-all duration-500 delay-100 ${isHovered ? "opacity-60 scale-100" : "opacity-0 scale-0"}`} />
+                    
+                    <div className="relative z-10">
+                      {/* Icon with gradient */}
+                      <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${category.color} flex items-center justify-center mb-4 shadow-lg transition-all duration-500 ${isHovered ? "scale-110 rotate-3" : ""}`}>
+                        <Icon className="w-7 h-7 text-white" />
+                      </div>
+                      
+                      {/* Title & Subtitle */}
+                      <h4 className="text-lg font-bold text-foreground mb-1">{category.title}</h4>
+                      <p className="text-sm text-muted-foreground mb-4 line-clamp-1">{category.subtitle}</p>
+                      
+                      {/* Fee badge */}
+                      <div className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-semibold mb-4 transition-all duration-300 ${
+                        isHovered 
+                          ? `bg-gradient-to-r ${category.color} text-white` 
+                          : "bg-muted text-foreground"
+                      }`}>
+                        <Star className="w-3.5 h-3.5" />
+                        {category.fee}
+                      </div>
+                      
+                      {/* Highlights */}
+                      <ul className="space-y-2">
+                        {category.highlights.map((highlight, idx) => (
+                          <li key={idx} className="flex items-center gap-2 text-sm text-muted-foreground">
+                            <Check className={`w-4 h-4 flex-shrink-0 transition-colors duration-300 ${isHovered ? "text-primary" : "text-muted-foreground/50"}`} />
+                            <span>{highlight}</span>
+                          </li>
+                        ))}
+                      </ul>
+                      
+                      {/* CTA */}
+                      <div className={`mt-5 flex items-center gap-2 text-sm font-semibold transition-all duration-300 ${isHovered ? "text-primary gap-3" : "text-muted-foreground"}`}>
+                        <span>Join Now</span>
+                        <ArrowRight className="w-4 h-4" />
+                      </div>
+                    </div>
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
         </div>
 
         {/* Mission & Vision Summary Cards */}
