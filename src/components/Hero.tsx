@@ -34,7 +34,7 @@ const Hero = () => {
 
           {/* Subtitle */}
           <p className="text-lg md:text-xl text-primary-foreground/90 max-w-2xl mx-auto mb-10 animate-fade-in-up animation-delay-100">
-            Advancing the Practice of Radiation Therapy Worldwide
+            Empowering Professionals, Improving Cancer Care
           </p>
 
           {/* CTA Button */}
