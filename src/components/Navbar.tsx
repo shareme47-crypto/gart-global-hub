@@ -16,7 +16,7 @@ const Navbar = () => {
       label: "Membership", 
       dropdown: [
         { label: "Join GART", href: "/signup" },
-        { label: "Member Benefits", href: "/#benefits" },
+        { label: "Member Benefits", href: "/member-benefits" },
       ]
     },
     { label: "Education", href: "/education" },
