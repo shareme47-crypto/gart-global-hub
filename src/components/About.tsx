@@ -76,6 +76,103 @@ const About = () => {
           </div>
         </div>
 
+        {/* Mission & Vision Grid */}
+        <div className="grid lg:grid-cols-2 gap-8 max-w-6xl mx-auto mb-20">
+          {/* Mission Card */}
+          <div className="group relative p-8 rounded-3xl bg-card border border-border shadow-md hover:shadow-xl transition-all duration-500 overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-primary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            
+            <div className="relative z-10">
+              <div className="flex items-center gap-4 mb-6">
+                <div className="w-14 h-14 rounded-2xl gradient-hero flex items-center justify-center shadow-glow">
+                  <Target className="w-7 h-7 text-primary-foreground" />
+                </div>
+                <div>
+                  <span className="text-primary text-sm font-semibold uppercase tracking-wider">Our Mission</span>
+                  <h3 className="text-xl font-bold text-foreground">Elevating Global Standards</h3>
+                </div>
+              </div>
+              
+              <p className="text-muted-foreground leading-relaxed mb-6">
+                GART's mission is to advance education, professional practice, collaboration, research, 
+                and service across radiation allied health professions. We are committed to excellence 
+                in cancer care and uphold our societal responsibility to improve patient outcomes worldwide.
+              </p>
+              
+              <Accordion type="single" collapsible className="w-full">
+                <AccordionItem value="mission-objectives" className="border-0">
+                  <AccordionTrigger className="px-4 py-3 rounded-xl bg-primary/5 hover:bg-primary/10 hover:no-underline transition-colors">
+                    <span className="text-sm font-semibold text-primary">
+                      View Mission Objectives
+                    </span>
+                  </AccordionTrigger>
+                  <AccordionContent className="pt-4">
+                    <ul className="space-y-3">
+                      {[
+                        "Global standards, ethics, and excellence in professional practice",
+                        "Lifelong learning through education, research, and innovation",
+                        "International collaboration, leadership, and multidisciplinary teamwork",
+                      ].map((item, idx) => (
+                        <li key={idx} className="flex items-start gap-3 p-3 rounded-lg bg-muted/50">
+                          <span className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0" />
+                          <span className="text-muted-foreground text-sm">{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
+            </div>
+          </div>
+
+          {/* Vision Card */}
+          <div className="group relative p-8 rounded-3xl bg-card border border-border shadow-md hover:shadow-xl transition-all duration-500 overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-br from-secondary/5 via-transparent to-secondary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            
+            <div className="relative z-10">
+              <div className="flex items-center gap-4 mb-6">
+                <div className="w-14 h-14 rounded-2xl gradient-accent flex items-center justify-center">
+                  <Eye className="w-7 h-7 text-secondary-foreground" />
+                </div>
+                <div>
+                  <span className="text-secondary text-sm font-semibold uppercase tracking-wider">Our Vision</span>
+                  <h3 className="text-xl font-bold text-foreground">Shaping the Future of Cancer Care</h3>
+                </div>
+              </div>
+              
+              <p className="text-muted-foreground leading-relaxed mb-6">
+                A world where radiation allied health professionals are empowered, united, and recognised 
+                as leaders in cancer care. Guided by equity, compassion, and excellence, GART strives to 
+                be the leading global voice for professional advancement, ethical leadership, and 
+                patient-centred practice in the radiation sciences.
+              </p>
+              
+              <Accordion type="single" collapsible className="w-full">
+                <AccordionItem value="vision-objectives" className="border-0">
+                  <AccordionTrigger className="px-4 py-3 rounded-xl bg-secondary/10 hover:bg-secondary/15 hover:no-underline transition-colors">
+                    <span className="text-sm font-semibold text-secondary">
+                      View Vision Objectives
+                    </span>
+                  </AccordionTrigger>
+                  <AccordionContent className="pt-4">
+                    <ul className="space-y-3">
+                      {[
+                        "Advance global education, standards, and ethical leadership",
+                        "Foster collaboration, research, and innovation",
+                        "Serve patients and communities through awareness and professional excellence",
+                      ].map((item, idx) => (
+                        <li key={idx} className="flex items-start gap-3 p-3 rounded-lg bg-muted/50">
+                          <span className="w-2 h-2 bg-secondary rounded-full mt-2 flex-shrink-0" />
+                          <span className="text-muted-foreground text-sm">{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
+            </div>
+          </div>
+        </div>
 
         {/* Core Values */}
         <div className="max-w-5xl mx-auto">
