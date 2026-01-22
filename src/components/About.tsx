@@ -42,10 +42,6 @@ const About = () => {
           <span className="inline-block px-4 py-2 rounded-full bg-primary/10 text-primary font-semibold text-sm uppercase tracking-wider mb-6">
             About GART
           </span>
-          <h2 className="text-3xl md:text-5xl font-bold text-foreground mb-6">
-            Empowering Professionals,{" "}
-            <span className="text-gradient">Improving Cancer Care</span>
-          </h2>
         </div>
 
         {/* Who We Are - Featured Card */}

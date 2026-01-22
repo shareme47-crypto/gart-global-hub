@@ -37,17 +37,6 @@ const Hero = () => {
             Empowering Professionals, Improving Cancer Care
           </p>
 
-          {/* CTA Button */}
-          <div className="animate-fade-in-up animation-delay-200">
-            <a href="#about">
-              <Button 
-                size="lg" 
-                className="bg-primary-foreground/10 border-2 border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-primary px-10 py-6 text-lg font-semibold"
-              >
-                Learn More
-              </Button>
-            </a>
-          </div>
         </div>
       </div>
     </section>
