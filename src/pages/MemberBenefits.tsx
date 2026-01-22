@@ -1,19 +1,17 @@
 import Navbar from "@/components/Navbar";
-import Hero from "@/components/Hero";
-import About from "@/components/About";
+import Benefits from "@/components/Benefits";
 import Footer from "@/components/Footer";
 
-const Index = () => {
+const MemberBenefits = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      <main>
-        <Hero />
-        <About />
+      <main className="pt-20">
+        <Benefits />
       </main>
       <Footer />
     </div>
   );
 };
 
-export default Index;
+export default MemberBenefits;
