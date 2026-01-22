@@ -12,7 +12,6 @@ const Navbar = () => {
 
   const navLinks = [
     { label: "Home", href: "/" },
-    { label: "About Us", href: "/#about" },
     { 
       label: "Membership", 
       dropdown: [
