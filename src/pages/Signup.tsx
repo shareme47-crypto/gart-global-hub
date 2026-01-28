@@ -26,7 +26,7 @@ const membershipCategories = [
   {
     id: "student",
     name: "Student Member",
-    subtitle: "Radiotherapy Technology / Radiation Allied Health Professionals",
+    subtitle: "Radiotherapy Technology / Radiation Allied Health Sciences",
     icon: GraduationCap,
     color: "from-blue-500 to-cyan-500",
     eligibility: [
@@ -47,31 +47,6 @@ const membershipCategories = [
       "Networking opportunities with professionals and mentors.",
       "Career guidance, academic development, and research awareness.",
       "Digital membership certificate and student recognition within GART."
-    ]
-  },
-  {
-    id: "allied",
-    name: "Radiation Allied Health Professional Member",
-    subtitle: "Except Radiation Therapists",
-    icon: Stethoscope,
-    color: "from-green-500 to-emerald-500",
-    eligibility: [
-      "Practicing allied health professionals in radiation sciences (e.g., Radiographers, Nuclear Medicine Technologists, Medical Imaging professionals, etc.)."
-    ],
-    requiredDocument: "Upload valid registration number issued by the respective national regulatory authority.",
-    fees: [
-      { region: "Indian Members", amount: "₹1000 for 5 years" },
-      { region: "International Members", amount: "USD 50 for 5 years" },
-      { region: "LMIC Members", amount: "USD 20 for 5 years" }
-    ],
-    feeNote: "Renewal required after 5 years.",
-    benefits: [
-      "Full access to continuing education programs, webinars, and professional development activities.",
-      "Eligibility to participate in conferences, workshops, and academic forums.",
-      "Opportunities for research collaboration and professional networking.",
-      "Professional recognition through GART membership.",
-      "Access to international guidelines, publications, and best practice updates.",
-      "Advocacy and professional support at national and global levels."
     ]
   },
   {
@@ -100,6 +75,31 @@ const membershipCategories = [
     ]
   },
   {
+    id: "allied",
+    name: "Radiation Allied Health Professional Member",
+    subtitle: "Except Radiation Therapists",
+    icon: Stethoscope,
+    color: "from-green-500 to-emerald-500",
+    eligibility: [
+      "Practicing allied health professionals in radiation sciences (e.g., Radiographers, Nuclear Medicine Technologists, Medical Imaging professionals, etc.)."
+    ],
+    requiredDocument: "Upload valid registration number issued by the respective national regulatory authority.",
+    fees: [
+      { region: "Indian Members", amount: "₹1000 for 5 years" },
+      { region: "International Members", amount: "USD 50 for 5 years" },
+      { region: "LMIC Members", amount: "USD 20 for 5 years" }
+    ],
+    feeNote: "Renewal required after 5 years.",
+    benefits: [
+      "Full access to continuing education programs, webinars, and professional development activities.",
+      "Eligibility to participate in conferences, workshops, and academic forums.",
+      "Opportunities for research collaboration and professional networking.",
+      "Professional recognition through GART membership.",
+      "Access to international guidelines, publications, and best practice updates.",
+      "Advocacy and professional support at national and global levels."
+    ]
+  },
+  {
     id: "volunteer",
     name: "Volunteer Member",
     subtitle: "Support GART's Educational, Social & Advocacy Initiatives",
@@ -110,11 +110,11 @@ const membershipCategories = [
     ],
     requiredDocument: "Upload valid National Identity Card.",
     fees: [
-      { region: "Indian Members", amount: "₹500 for 5 years or any voluntary donation" },
-      { region: "International Members", amount: "USD 40 for 5 years or any donation above this" },
-      { region: "LMIC Members", amount: "USD 20 for 5 years or any donation above this" }
+      { region: "Indian Members", amount: "₹500 (Lifetime Membership)" },
+      { region: "International Members", amount: "USD 40 (Lifetime Membership)" },
+      { region: "LMIC Members", amount: "USD 20 (Lifetime Membership)" }
     ],
-    feeNote: "",
+    feeNote: "Any donation higher than the minimum amount qualifies for lifetime membership.",
     benefits: [
       "Active participation in blood donation camps, cancer awareness drives, screening programs, and community health initiatives.",
       "Involvement in patient education programs, public outreach, and professional awareness campaigns.",
@@ -993,7 +993,7 @@ const Signup = () => {
               GART Membership
             </h1>
             <p className="text-lg text-primary-foreground/80 max-w-2xl mx-auto mb-8">
-              Become part of a global community dedicated to advancing radiation therapy 
+              Become part of a global community dedicated to advancing radiation allied health science 
               excellence and improving patient outcomes worldwide.
             </p>
           </div>

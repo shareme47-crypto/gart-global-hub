@@ -9,19 +9,19 @@ const Education = () => {
     {
       icon: GraduationCap,
       title: "Continuing Professional Development",
-      description: "Structured CPD programmes designed to help radiation therapists maintain and enhance their clinical competencies throughout their careers.",
+      description: "Structured CPD programmes designed to help radiation allied health science professionals maintain and enhance their clinical competencies throughout their careers.",
       features: ["Online learning modules", "Accredited workshops", "Self-assessment tools", "CPD tracking system"],
     },
     {
       icon: BookOpen,
       title: "Clinical Training Resources",
-      description: "Comprehensive educational materials covering the latest techniques in radiation therapy, from foundational concepts to advanced procedures.",
+      description: "Comprehensive educational materials covering the latest techniques in radiation allied health science, from foundational concepts to advanced procedures.",
       features: ["Treatment planning guides", "Protocol documentation", "Case study libraries", "Best practice guidelines"],
     },
     {
       icon: Award,
       title: "Certification Programmes",
-      description: "Professional certification pathways that validate expertise and demonstrate commitment to excellence in radiation therapy practice.",
+      description: "Professional certification pathways that validate expertise and demonstrate commitment to excellence in radiation allied health science practice.",
       features: ["Specialty certifications", "Advanced practice credentials", "Leadership qualifications", "Research competencies"],
     },
     {
@@ -75,7 +75,7 @@ const Education = () => {
               Education & Training
             </h1>
             <p className="text-lg text-muted-foreground leading-relaxed">
-              GART is committed to advancing the knowledge and skills of radiation therapy 
+              GART is committed to advancing the knowledge and skills of radiation allied health science 
               professionals worldwide through comprehensive educational programmes, resources, 
               and professional development opportunities.
             </p>
@@ -91,7 +91,7 @@ const Education = () => {
               Educational Programmes
             </h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              Our educational initiatives are designed to support radiation therapists at 
+              Our educational initiatives are designed to support radiation allied health science professionals at 
               every stage of their professional journey.
             </p>
           </div>
@@ -138,7 +138,7 @@ const Education = () => {
                 Education Without Borders
               </h2>
               <p className="text-muted-foreground mb-6 leading-relaxed">
-                GART's educational programmes are accessible to radiation therapy professionals 
+                GART's educational programmes are accessible to radiation allied health science professionals 
                 worldwide. Our online learning platform, regional workshops, and international 
                 conferences ensure that quality education reaches practitioners regardless of 
                 their geographic location.
