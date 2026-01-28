@@ -6,8 +6,9 @@ const Footer = () => {
   const quickLinks = [
     { label: "About Us", href: "/#about" },
     { label: "Our Mission", href: "/#mission" },
-    { label: "Member Benefits", href: "/#benefits" },
-    { label: "Join GART", href: "/signup" },
+    { label: "Member Benefits", href: "/member-benefits" },
+    { label: "Resources", href: "/education" },
+    { label: "Contact Us", href: "/contact" },
   ];
 
   const resources = [

@@ -248,7 +248,9 @@ const Events = () => {
                 GART supports member-led events and regional chapter activities. 
                 Contact us to learn about hosting or sponsoring events.
               </p>
-              <Button size="lg">Contact Us</Button>
+              <Link to="/contact">
+                <Button size="lg">Contact Us</Button>
+              </Link>
             </div>
           </div>
         </section>
