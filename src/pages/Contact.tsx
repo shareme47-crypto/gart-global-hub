@@ -41,7 +41,7 @@ const Contact = () => {
               Contact Us
             </h1>
             <p className="text-lg text-muted-foreground leading-relaxed">
-              We welcome your enquiries and look forward to connecting with radiation therapy 
+              We welcome your enquiries and look forward to connecting with radiation allied health science 
               professionals worldwide. Reach out to learn more about membership, partnerships, 
               or collaboration opportunities.
             </p>
@@ -219,7 +219,7 @@ const Contact = () => {
               Join Our Global Network
             </h2>
             <p className="text-muted-foreground mb-8">
-              GART connects radiation therapy professionals across continents. Whether you 
+              GART connects radiation allied health science professionals across continents. Whether you 
               are seeking membership information, educational resources, or advocacy support, 
               we are committed to serving our global community.
             </p>

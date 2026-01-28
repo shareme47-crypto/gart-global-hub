@@ -1,4 +1,4 @@
-import { Mail, MapPin, Phone, Linkedin, Twitter, Facebook, Youtube } from "lucide-react";
+import { Mail, MapPin, Phone, Linkedin, Twitter, Facebook, Instagram } from "lucide-react";
 import { Link } from "react-router-dom";
 import gartLogo from "@/assets/gart-logo-new.jpeg";
 
@@ -13,16 +13,16 @@ const Footer = () => {
 
   const resources = [
     { label: "News", href: "/news" },
-    { label: "Blog", href: "/blog" },
     { label: "Events", href: "/events" },
-    { label: "Career Center", href: "#" },
+    { label: "Join GART", href: "/signup" },
+    { label: "Career Center", href: "/jobs" },
   ];
 
   const socialLinks = [
     { icon: Linkedin, href: "#", label: "LinkedIn" },
     { icon: Twitter, href: "#", label: "Twitter" },
+    { icon: Instagram, href: "#", label: "Instagram" },
     { icon: Facebook, href: "#", label: "Facebook" },
-    { icon: Youtube, href: "#", label: "YouTube" },
   ];
 
   return (
@@ -35,7 +35,7 @@ const Footer = () => {
               <img src={gartLogo} alt="GART Logo" className="w-12 h-12 rounded-full object-cover" />
               <div>
                 <span className="text-xl font-bold block">G.A.R.T</span>
-                <span className="text-xs text-background/60">Est. 2025</span>
+                <span className="text-xs text-background/60">Est. 2026</span>
               </div>
             </div>
             <p className="text-background/70 text-sm leading-relaxed mb-6">

@@ -26,7 +26,7 @@ const Navbar = () => {
       label: "Opportunities & Updates", 
       dropdown: [
         { label: "News", href: "/news" },
-        { label: "Blog", href: "/blog" },
+        { label: "Job Info", href: "/jobs" },
       ]
     },
     { label: "Social Welfare", href: "/social-welfare" },
