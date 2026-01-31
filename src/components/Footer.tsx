@@ -19,10 +19,10 @@ const Footer = () => {
   ];
 
   const socialLinks = [
-    { icon: Linkedin, href: "#", label: "LinkedIn" },
-    { icon: Twitter, href: "#", label: "Twitter" },
-    { icon: Instagram, href: "#", label: "Instagram" },
-    { icon: Facebook, href: "#", label: "Facebook" },
+    { icon: Linkedin, href: "https://www.linkedin.com/feed/?trk=guest_homepage-basic_nav-header-signin", label: "LinkedIn" },
+    { icon: Twitter, href: "https://x.com/GART_RTT", label: "Twitter" },
+    { icon: Instagram, href: "https://www.instagram.com/garthealthcare?igsh=MWRrb3JjMmE0cGJwbw==", label: "Instagram" },
+    { icon: Facebook, href: "https://www.facebook.com/share/1DsYDAt1xi/", label: "Facebook" },
   ];
 
   return (
