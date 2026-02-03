@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -19,6 +19,10 @@ import {
   Shield,
   Calendar
 } from "lucide-react";
+import PhoneInputWithCode from "@/components/forms/PhoneInputWithCode";
+import CountrySelect from "@/components/forms/CountrySelect";
+import CommunicationAddress from "@/components/forms/CommunicationAddress";
+import { lmicCountries, isLMICCountry, isIndiaCountry, getDialCode } from "@/data/countries";
 import { useToast } from "@/hooks/use-toast";
 
 // Membership Categories Data
@@ -141,21 +145,7 @@ const paymentPolicy = [
   "Membership activation is subject to successful payment and document verification."
 ];
 
-// LMIC Countries List
-const lmicCountries = [
-  "Afghanistan", "Bangladesh", "Benin", "Bhutan", "Bolivia", "Burkina Faso", "Burundi",
-  "Cambodia", "Cameroon", "Central African Republic", "Chad", "Comoros", "Congo",
-  "Côte d'Ivoire", "Djibouti", "Egypt", "El Salvador", "Eritrea", "Eswatini", "Ethiopia",
-  "Gambia", "Ghana", "Guatemala", "Guinea", "Guinea-Bissau", "Haiti", "Honduras",
-  "India", "Indonesia", "Kenya", "Kiribati", "Kyrgyzstan", "Lao PDR", "Lesotho",
-  "Liberia", "Madagascar", "Malawi", "Mali", "Mauritania", "Micronesia", "Moldova",
-  "Mongolia", "Morocco", "Mozambique", "Myanmar", "Nepal", "Nicaragua", "Niger",
-  "Nigeria", "North Korea", "Pakistan", "Papua New Guinea", "Philippines", "Rwanda",
-  "São Tomé and Príncipe", "Senegal", "Sierra Leone", "Solomon Islands", "Somalia",
-  "South Sudan", "Sri Lanka", "Sudan", "Syria", "Tajikistan", "Tanzania", "Timor-Leste",
-  "Togo", "Tunisia", "Uganda", "Ukraine", "Uzbekistan", "Vanuatu", "Vietnam",
-  "Yemen", "Zambia", "Zimbabwe"
-];
+// LMIC countries list is now imported from @/data/countries
 
 // Student Registration Form Component
 const StudentRegistrationForm = () => {
@@ -164,10 +154,13 @@ const StudentRegistrationForm = () => {
     fullName: "",
     dateOfBirth: "",
     gender: "",
+    countryCode: "+91",
     mobile: "",
     email: "",
+    communicationAddress: "",
     city: "",
     state: "",
+    pincode: "",
     country: "",
     instituteName: "",
     courseName: "",
@@ -177,8 +170,18 @@ const StudentRegistrationForm = () => {
     declaration: false
   });
 
-  const isLMIC = lmicCountries.includes(formData.country);
-  const isIndia = formData.country === "India";
+  // Auto-update country code when country changes
+  useEffect(() => {
+    if (formData.country) {
+      setFormData(prev => ({
+        ...prev,
+        countryCode: getDialCode(formData.country)
+      }));
+    }
+  }, [formData.country]);
+
+  const isLMIC = isLMICCountry(formData.country);
+  const isIndia = isIndiaCountry(formData.country);
   
   const calculateFee = () => {
     if (!formData.courseDuration || !formData.currentYear) return null;
@@ -235,30 +238,39 @@ const StudentRegistrationForm = () => {
           </div>
           <div>
             <label className="block text-sm font-medium text-foreground mb-1">Mobile Number *</label>
-            <input type="tel" name="mobile" value={formData.mobile} onChange={handleChange} required
-              className="w-full px-4 py-2.5 rounded-lg border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50" />
+            <PhoneInputWithCode
+              countryCode={formData.countryCode}
+              phoneNumber={formData.mobile}
+              onCountryCodeChange={(code) => setFormData(prev => ({ ...prev, countryCode: code }))}
+              onPhoneChange={(phone) => setFormData(prev => ({ ...prev, mobile: phone }))}
+              selectedCountry={formData.country}
+            />
           </div>
           <div>
             <label className="block text-sm font-medium text-foreground mb-1">Email Address *</label>
             <input type="email" name="email" value={formData.email} onChange={handleChange} required
               className="w-full px-4 py-2.5 rounded-lg border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50" />
           </div>
-          <div>
-            <label className="block text-sm font-medium text-foreground mb-1">City *</label>
-            <input type="text" name="city" value={formData.city} onChange={handleChange} required
-              className="w-full px-4 py-2.5 rounded-lg border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50" />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-foreground mb-1">State *</label>
-            <input type="text" name="state" value={formData.state} onChange={handleChange} required
-              className="w-full px-4 py-2.5 rounded-lg border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50" />
-          </div>
-          <div>
+          <div className="sm:col-span-2">
             <label className="block text-sm font-medium text-foreground mb-1">Country *</label>
-            <input type="text" name="country" value={formData.country} onChange={handleChange} required
-              className="w-full px-4 py-2.5 rounded-lg border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50" />
+            <CountrySelect
+              value={formData.country}
+              onChange={(value) => setFormData(prev => ({ ...prev, country: value }))}
+            />
           </div>
         </div>
+        
+        {/* Communication Address */}
+        <CommunicationAddress
+          address={formData.communicationAddress}
+          city={formData.city}
+          state={formData.state}
+          pincode={formData.pincode}
+          onAddressChange={(value) => setFormData(prev => ({ ...prev, communicationAddress: value }))}
+          onCityChange={(value) => setFormData(prev => ({ ...prev, city: value }))}
+          onStateChange={(value) => setFormData(prev => ({ ...prev, state: value }))}
+          onPincodeChange={(value) => setFormData(prev => ({ ...prev, pincode: value }))}
+        />
       </div>
 
       {/* Section B: Academic Details */}
@@ -396,10 +408,13 @@ const ProfessionalRegistrationForm = ({ type }: { type: "allied" | "therapist" }
     fullName: "",
     dateOfBirth: "",
     gender: "",
+    countryCode: "+91",
     mobile: "",
     email: "",
+    communicationAddress: "",
     city: "",
     state: "",
+    pincode: "",
     country: "",
     profession: "",
     organization: "",
@@ -416,8 +431,18 @@ const ProfessionalRegistrationForm = ({ type }: { type: "allied" | "therapist" }
     declaration: false
   });
 
-  const isLMIC = lmicCountries.includes(formData.country);
-  const isIndia = formData.country === "India";
+  // Auto-update country code when country changes
+  useEffect(() => {
+    if (formData.country) {
+      setFormData(prev => ({
+        ...prev,
+        countryCode: getDialCode(formData.country)
+      }));
+    }
+  }, [formData.country]);
+
+  const isLMIC = isLMICCountry(formData.country);
+  const isIndia = isIndiaCountry(formData.country);
 
   const getFee = () => {
     if (isIndia) return "₹1,000 (Valid for 5 Years)";
@@ -502,30 +527,39 @@ const ProfessionalRegistrationForm = ({ type }: { type: "allied" | "therapist" }
           </div>
           <div>
             <label className="block text-sm font-medium text-foreground mb-1">Mobile Number *</label>
-            <input type="tel" name="mobile" value={formData.mobile} onChange={handleChange} required
-              className="w-full px-4 py-2.5 rounded-lg border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50" />
+            <PhoneInputWithCode
+              countryCode={formData.countryCode}
+              phoneNumber={formData.mobile}
+              onCountryCodeChange={(code) => setFormData(prev => ({ ...prev, countryCode: code }))}
+              onPhoneChange={(phone) => setFormData(prev => ({ ...prev, mobile: phone }))}
+              selectedCountry={formData.country}
+            />
           </div>
           <div>
             <label className="block text-sm font-medium text-foreground mb-1">Email Address *</label>
             <input type="email" name="email" value={formData.email} onChange={handleChange} required
               className="w-full px-4 py-2.5 rounded-lg border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50" />
           </div>
-          <div>
-            <label className="block text-sm font-medium text-foreground mb-1">City *</label>
-            <input type="text" name="city" value={formData.city} onChange={handleChange} required
-              className="w-full px-4 py-2.5 rounded-lg border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50" />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-foreground mb-1">State *</label>
-            <input type="text" name="state" value={formData.state} onChange={handleChange} required
-              className="w-full px-4 py-2.5 rounded-lg border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50" />
-          </div>
-          <div>
+          <div className="sm:col-span-2">
             <label className="block text-sm font-medium text-foreground mb-1">Country *</label>
-            <input type="text" name="country" value={formData.country} onChange={handleChange} required
-              className="w-full px-4 py-2.5 rounded-lg border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50" />
+            <CountrySelect
+              value={formData.country}
+              onChange={(value) => setFormData(prev => ({ ...prev, country: value }))}
+            />
           </div>
         </div>
+        
+        {/* Communication Address */}
+        <CommunicationAddress
+          address={formData.communicationAddress}
+          city={formData.city}
+          state={formData.state}
+          pincode={formData.pincode}
+          onAddressChange={(value) => setFormData(prev => ({ ...prev, communicationAddress: value }))}
+          onCityChange={(value) => setFormData(prev => ({ ...prev, city: value }))}
+          onStateChange={(value) => setFormData(prev => ({ ...prev, state: value }))}
+          onPincodeChange={(value) => setFormData(prev => ({ ...prev, pincode: value }))}
+        />
       </div>
 
       {/* Section C: Professional Details */}
@@ -715,10 +749,13 @@ const VolunteerRegistrationForm = () => {
     fullName: "",
     dateOfBirth: "",
     gender: "",
+    countryCode: "+91",
     mobile: "",
     email: "",
+    communicationAddress: "",
     city: "",
     state: "",
+    pincode: "",
     country: "",
     occupation: "",
     organization: "",
@@ -726,8 +763,18 @@ const VolunteerRegistrationForm = () => {
     declaration: false
   });
 
-  const isLMIC = lmicCountries.includes(formData.country);
-  const isIndia = formData.country === "India";
+  // Auto-update country code when country changes
+  useEffect(() => {
+    if (formData.country) {
+      setFormData(prev => ({
+        ...prev,
+        countryCode: getDialCode(formData.country)
+      }));
+    }
+  }, [formData.country]);
+
+  const isLMIC = isLMICCountry(formData.country);
+  const isIndia = isIndiaCountry(formData.country);
 
   const getFee = () => {
     if (isIndia) return "₹500 (Valid for 5 Years) or any voluntary donation";
@@ -782,30 +829,39 @@ const VolunteerRegistrationForm = () => {
           </div>
           <div>
             <label className="block text-sm font-medium text-foreground mb-1">Mobile Number *</label>
-            <input type="tel" name="mobile" value={formData.mobile} onChange={handleChange} required
-              className="w-full px-4 py-2.5 rounded-lg border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50" />
+            <PhoneInputWithCode
+              countryCode={formData.countryCode}
+              phoneNumber={formData.mobile}
+              onCountryCodeChange={(code) => setFormData(prev => ({ ...prev, countryCode: code }))}
+              onPhoneChange={(phone) => setFormData(prev => ({ ...prev, mobile: phone }))}
+              selectedCountry={formData.country}
+            />
           </div>
           <div>
             <label className="block text-sm font-medium text-foreground mb-1">Email Address *</label>
             <input type="email" name="email" value={formData.email} onChange={handleChange} required
               className="w-full px-4 py-2.5 rounded-lg border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50" />
           </div>
-          <div>
-            <label className="block text-sm font-medium text-foreground mb-1">City *</label>
-            <input type="text" name="city" value={formData.city} onChange={handleChange} required
-              className="w-full px-4 py-2.5 rounded-lg border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50" />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-foreground mb-1">State *</label>
-            <input type="text" name="state" value={formData.state} onChange={handleChange} required
-              className="w-full px-4 py-2.5 rounded-lg border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50" />
-          </div>
-          <div>
+          <div className="sm:col-span-2">
             <label className="block text-sm font-medium text-foreground mb-1">Country *</label>
-            <input type="text" name="country" value={formData.country} onChange={handleChange} required
-              className="w-full px-4 py-2.5 rounded-lg border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50" />
+            <CountrySelect
+              value={formData.country}
+              onChange={(value) => setFormData(prev => ({ ...prev, country: value }))}
+            />
           </div>
         </div>
+        
+        {/* Communication Address */}
+        <CommunicationAddress
+          address={formData.communicationAddress}
+          city={formData.city}
+          state={formData.state}
+          pincode={formData.pincode}
+          onAddressChange={(value) => setFormData(prev => ({ ...prev, communicationAddress: value }))}
+          onCityChange={(value) => setFormData(prev => ({ ...prev, city: value }))}
+          onStateChange={(value) => setFormData(prev => ({ ...prev, state: value }))}
+          onPincodeChange={(value) => setFormData(prev => ({ ...prev, pincode: value }))}
+        />
       </div>
 
       {/* Section B: Background Details */}
