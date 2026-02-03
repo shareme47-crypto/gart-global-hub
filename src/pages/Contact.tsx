@@ -7,6 +7,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 
+const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
 const Contact = () => {
   const { toast } = useToast();
   const [formData, setFormData] = useState({
@@ -15,14 +17,35 @@ const Contact = () => {
     subject: "",
     message: "",
   });
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    toast({
-      title: "Message Sent",
-      description: "Thank you for contacting us. We will respond within 48 hours.",
-    });
-    setFormData({ name: "", email: "", subject: "", message: "" });
+    try {
+      setLoading(true);
+      const response = await fetch(`${API_BASE}/contact`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+      const payload = await response.json();
+      if (!response.ok || !payload?.success) {
+        throw new Error(payload?.message || "Failed to send message");
+      }
+      toast({
+        title: "Message Sent",
+        description: "Thank you for contacting us. We will respond within 48 hours.",
+      });
+      setFormData({ name: "", email: "", subject: "", message: "" });
+    } catch (err) {
+      toast({
+        title: "Message failed",
+        description: err instanceof Error ? err.message : "Failed to send message",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -201,9 +224,9 @@ const Contact = () => {
                   />
                 </div>
 
-                <Button type="submit" size="lg" className="w-full gap-2">
+                <Button type="submit" size="lg" className="w-full gap-2" disabled={loading}>
                   <Send className="w-4 h-4" />
-                  Send Message
+                  {loading ? "Sending..." : "Send Message"}
                 </Button>
               </form>
             </div>

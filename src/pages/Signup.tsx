@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState, type Dispatch, type SetStateAction } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -20,6 +20,189 @@ import {
   Calendar
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { QRCodeSVG } from "qrcode.react";
+import { useNavigate } from "react-router-dom";
+
+type PaymentQuote = {
+  amount: number;
+  currency: string;
+  endDate: string;
+  qrPayload: string;
+};
+
+type PaymentInfo = {
+  transactionId: string;
+  paidAt: string;
+  payerName: string;
+  screenshotUrl: string;
+};
+
+type FileMap = Record<string, File | null>;
+
+const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5000";
+const MEMBERSHIP_API = `${API_BASE}/memberships`;
+
+const getAuthHeaders = () => {
+  const token = localStorage.getItem("gart_access_token");
+  if (!token) {
+    throw new Error("Please login to continue.");
+  }
+  return {
+    Authorization: `Bearer ${token}`,
+  };
+};
+
+const getStoredEmail = () => {
+  try {
+    const raw = localStorage.getItem("gart_user");
+    if (!raw) return "";
+    const parsed = JSON.parse(raw);
+    return String(parsed?.email || "");
+  } catch {
+    return "";
+  }
+};
+
+const quoteMembership = async (membershipType: string, data: Record<string, unknown>) => {
+  const response = await fetch(`${MEMBERSHIP_API}/quote`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      ...getAuthHeaders(),
+    },
+    body: JSON.stringify({ membershipType, data }),
+  });
+  const payload = await response.json();
+  if (!response.ok || !payload?.success) {
+    throw new Error(payload?.message || "Failed to calculate membership fee");
+  }
+  return payload as PaymentQuote;
+};
+
+const submitMembership = async (
+  membershipType: string,
+  data: Record<string, unknown>,
+  payment: PaymentInfo,
+  files: FileMap
+) => {
+  const formData = new FormData();
+  formData.append("membershipType", membershipType);
+  formData.append("data", JSON.stringify(data));
+  formData.append("payment", JSON.stringify(payment));
+  Object.entries(files).forEach(([key, file]) => {
+    if (file) formData.append(key, file);
+  });
+
+  const response = await fetch(`${MEMBERSHIP_API}/apply`, {
+    method: "POST",
+    headers: {
+      ...getAuthHeaders(),
+    },
+    body: formData,
+  });
+  const payload = await response.json();
+  if (!response.ok || !payload?.success) {
+    throw new Error(payload?.message || "Failed to submit membership request");
+  }
+  return payload;
+};
+
+const PaymentSection = ({
+  quote,
+  paymentInfo,
+  setPaymentInfo,
+  onBack,
+  onSubmit,
+  loading,
+  error,
+}: {
+  quote: PaymentQuote;
+  paymentInfo: PaymentInfo;
+  setPaymentInfo: Dispatch<SetStateAction<PaymentInfo>>;
+  onBack: () => void;
+  onSubmit: () => void;
+  loading: boolean;
+  error: string;
+}) => (
+  <div className="space-y-6">
+    <div className="rounded-xl border border-border bg-card p-6">
+      <h3 className="text-lg font-semibold text-foreground mb-2">Payment Summary</h3>
+      <p className="text-sm text-muted-foreground">
+        Please pay the exact amount and enter the transaction details below.
+      </p>
+      <div className="mt-4 flex flex-wrap items-center gap-6">
+        <div className="rounded-xl border border-border/60 bg-background p-4">
+          <QRCodeSVG value={quote.qrPayload} size={160} />
+        </div>
+        <div>
+          <p className="text-sm text-muted-foreground">Amount Due</p>
+          <p className="text-3xl font-bold text-primary">
+            {quote.currency} {quote.amount}
+          </p>
+          <p className="mt-2 text-xs text-muted-foreground">
+            Membership ends on {new Date(quote.endDate).toLocaleDateString()}
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div className="grid sm:grid-cols-2 gap-4">
+      <div>
+        <label className="block text-sm font-medium text-foreground mb-1">Transaction ID *</label>
+        <input
+          type="text"
+          value={paymentInfo.transactionId}
+          onChange={(event) =>
+            setPaymentInfo((prev) => ({ ...prev, transactionId: event.target.value }))
+          }
+          className="w-full px-4 py-2.5 rounded-lg border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+        />
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-foreground mb-1">Paid At *</label>
+        <input
+          type="date"
+          value={paymentInfo.paidAt}
+          onChange={(event) => setPaymentInfo((prev) => ({ ...prev, paidAt: event.target.value }))}
+          className="w-full px-4 py-2.5 rounded-lg border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+        />
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-foreground mb-1">Payer Name (optional)</label>
+        <input
+          type="text"
+          value={paymentInfo.payerName}
+          onChange={(event) =>
+            setPaymentInfo((prev) => ({ ...prev, payerName: event.target.value }))
+          }
+          className="w-full px-4 py-2.5 rounded-lg border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+        />
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-foreground mb-1">Payment Screenshot URL (optional)</label>
+        <input
+          type="text"
+          value={paymentInfo.screenshotUrl}
+          onChange={(event) =>
+            setPaymentInfo((prev) => ({ ...prev, screenshotUrl: event.target.value }))
+          }
+          className="w-full px-4 py-2.5 rounded-lg border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+        />
+      </div>
+    </div>
+
+    {error ? <p className="text-sm text-destructive">{error}</p> : null}
+
+    <div className="flex flex-wrap gap-3">
+      <Button type="button" variant="outline" onClick={onBack}>
+        Edit Details
+      </Button>
+      <Button type="button" onClick={onSubmit} disabled={loading}>
+        {loading ? "Submitting..." : "Submit Membership Request"}
+      </Button>
+    </div>
+  </div>
+);
 
 // Membership Categories Data
 const membershipCategories = [
@@ -160,6 +343,7 @@ const lmicCountries = [
 // Student Registration Form Component
 const StudentRegistrationForm = () => {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     fullName: "",
     dateOfBirth: "",
@@ -176,9 +360,44 @@ const StudentRegistrationForm = () => {
     university: "",
     declaration: false
   });
+  const [files, setFiles] = useState<FileMap>({
+    studentPhoto: null,
+    studentId: null,
+  });
+  const [step, setStep] = useState<"form" | "payment">("form");
+  const [quote, setQuote] = useState<PaymentQuote | null>(null);
+  const [paymentInfo, setPaymentInfo] = useState<PaymentInfo>({
+    transactionId: "",
+    paidAt: "",
+    payerName: "",
+    screenshotUrl: "",
+  });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const isLMIC = lmicCountries.includes(formData.country);
   const isIndia = formData.country === "India";
+
+  useEffect(() => {
+    const storedEmail = getStoredEmail();
+    if (storedEmail && !formData.email) {
+      setFormData((prev) => ({ ...prev, email: storedEmail }));
+    }
+  }, [formData.email]);
+
+  useEffect(() => {
+    const storedEmail = getStoredEmail();
+    if (storedEmail && !formData.email) {
+      setFormData((prev) => ({ ...prev, email: storedEmail }));
+    }
+  }, [formData.email]);
+
+  useEffect(() => {
+    const storedEmail = getStoredEmail();
+    if (storedEmail && !formData.email) {
+      setFormData((prev) => ({ ...prev, email: storedEmail }));
+    }
+  }, [formData.email]);
   
   const calculateFee = () => {
     if (!formData.courseDuration || !formData.currentYear) return null;
@@ -196,16 +415,92 @@ const StudentRegistrationForm = () => {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    toast({
-      title: "Application Submitted!",
-      description: "Redirecting to payment gateway...",
-    });
+    if (step === "payment") return;
+    setError("");
+    try {
+      setLoading(true);
+      const payload = await quoteMembership("student", formData);
+      setQuote(payload);
+      setStep("payment");
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Failed to prepare payment";
+      setError(message);
+      toast({ title: "Could not calculate fee", description: message, variant: "destructive" });
+      if (message.includes("Active membership already exists") || message.includes("already pending")) {
+        toast({
+          title: "Membership exists",
+          description: "Redirecting to your dashboard...",
+        });
+        setTimeout(() => {
+          window.location.href = "/dashboard";
+        }, 2000);
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handlePaymentSubmit = async () => {
+    setError("");
+    if (!paymentInfo.transactionId || !paymentInfo.paidAt) {
+      setError("Transaction ID and paid date are required.");
+      return;
+    }
+    try {
+      setLoading(true);
+      await submitMembership("student", formData, paymentInfo, files);
+      toast({
+        title: "Request submitted",
+        description: "We will verify your payment and update you shortly.",
+      });
+      setFormData({
+        fullName: "",
+        dateOfBirth: "",
+        gender: "",
+        mobile: "",
+        email: "",
+        city: "",
+        state: "",
+        country: "",
+        instituteName: "",
+        courseName: "",
+        courseDuration: "",
+        currentYear: "",
+        university: "",
+        declaration: false,
+      });
+      setStep("form");
+      setQuote(null);
+      setPaymentInfo({ transactionId: "", paidAt: "", payerName: "", screenshotUrl: "" });
+      setFiles({ studentPhoto: null, studentId: null });
+      navigate("/dashboard");
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Failed to submit request";
+      setError(message);
+      toast({ title: "Submission failed", description: message, variant: "destructive" });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-8">
+      {step === "payment" && quote ? (
+        <PaymentSection
+          quote={quote}
+          paymentInfo={paymentInfo}
+          setPaymentInfo={setPaymentInfo}
+          onBack={() => setStep("form")}
+          onSubmit={handlePaymentSubmit}
+          loading={loading}
+          error={error}
+        />
+      ) : null}
+
+      {step === "form" ? (
+        <>
       {/* Section A: Personal Details */}
       <div className="space-y-4">
         <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
@@ -240,7 +535,12 @@ const StudentRegistrationForm = () => {
           </div>
           <div>
             <label className="block text-sm font-medium text-foreground mb-1">Email Address *</label>
-            <input type="email" name="email" value={formData.email} onChange={handleChange} required
+            <input
+              type="email"
+              name="email"
+              value={formData.email}
+              readOnly
+              required
               className="w-full px-4 py-2.5 rounded-lg border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50" />
           </div>
           <div>
@@ -319,13 +619,25 @@ const StudentRegistrationForm = () => {
         <div className="grid sm:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-foreground mb-1">Passport Size Photograph *</label>
-            <input type="file" accept=".jpg,.jpeg,.png" required
+            <input
+              type="file"
+              accept=".jpg,.jpeg,.png"
+              required
+              onChange={(event) =>
+                setFiles((prev) => ({ ...prev, studentPhoto: event.target.files?.[0] || null }))
+              }
               className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground text-sm file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-primary/10 file:text-primary file:font-medium" />
             <p className="text-xs text-muted-foreground mt-1">JPG / PNG format</p>
           </div>
           <div>
             <label className="block text-sm font-medium text-foreground mb-1">Student ID Card *</label>
-            <input type="file" accept=".jpg,.jpeg,.png,.pdf" required
+            <input
+              type="file"
+              accept=".jpg,.jpeg,.png,.pdf"
+              required
+              onChange={(event) =>
+                setFiles((prev) => ({ ...prev, studentId: event.target.files?.[0] || null }))
+              }
               className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground text-sm file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-primary/10 file:text-primary file:font-medium" />
             <p className="text-xs text-muted-foreground mt-1">PDF / JPG / PNG format</p>
           </div>
@@ -372,18 +684,31 @@ const StudentRegistrationForm = () => {
           Declaration
         </h3>
         <label className="flex items-start gap-3 cursor-pointer">
-          <input type="checkbox" name="declaration" checked={formData.declaration} onChange={handleChange} required
-            className="mt-1 w-4 h-4" />
+          <input
+            type="checkbox"
+            name="declaration"
+            checked={formData.declaration}
+            onChange={handleChange}
+            required
+            className="mt-1 w-4 h-4"
+          />
           <span className="text-sm text-muted-foreground">
             I declare that the information provided is true and I am currently enrolled in the above course.
+            I agree to the{" "}
+            <a href="/terms" className="text-primary underline">
+              Terms &amp; Conditions
+            </a>
+            .
           </span>
         </label>
       </div>
 
-      <Button type="submit" size="lg" className="w-full group">
-        Proceed to Payment
+      <Button type="submit" size="lg" className="w-full group" disabled={loading}>
+        {loading ? "Preparing..." : "Proceed to Payment"}
         <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
       </Button>
+      </>
+      ) : null}
     </form>
   );
 };
@@ -391,6 +716,7 @@ const StudentRegistrationForm = () => {
 // Professional Registration Form Component (for Allied Health & Radiation Therapist)
 const ProfessionalRegistrationForm = ({ type }: { type: "allied" | "therapist" }) => {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [applicationType, setApplicationType] = useState<"fresh" | "renewal">("fresh");
   const [formData, setFormData] = useState({
     fullName: "",
@@ -415,6 +741,16 @@ const ProfessionalRegistrationForm = ({ type }: { type: "allied" | "therapist" }
     previousExpiryDate: "",
     declaration: false
   });
+  const [step, setStep] = useState<"form" | "payment">("form");
+  const [quote, setQuote] = useState<PaymentQuote | null>(null);
+  const [paymentInfo, setPaymentInfo] = useState<PaymentInfo>({
+    transactionId: "",
+    paidAt: "",
+    payerName: "",
+    screenshotUrl: "",
+  });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const isLMIC = lmicCountries.includes(formData.country);
   const isIndia = formData.country === "India";
@@ -433,12 +769,82 @@ const ProfessionalRegistrationForm = ({ type }: { type: "allied" | "therapist" }
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    toast({
-      title: "Application Submitted!",
-      description: "Redirecting to payment gateway...",
-    });
+    if (step === "payment") return;
+    setError("");
+    try {
+      setLoading(true);
+      const payload = await quoteMembership(type, { ...formData, applicationType });
+      setQuote(payload);
+      setStep("payment");
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Failed to prepare payment";
+      setError(message);
+      toast({ title: "Could not calculate fee", description: message, variant: "destructive" });
+      if (message.includes("Active membership already exists") || message.includes("already pending")) {
+        toast({
+          title: "Membership exists",
+          description: "Redirecting to your dashboard...",
+        });
+        setTimeout(() => {
+          window.location.href = "/dashboard";
+        }, 2000);
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handlePaymentSubmit = async () => {
+    setError("");
+    if (!paymentInfo.transactionId || !paymentInfo.paidAt) {
+      setError("Transaction ID and paid date are required.");
+      return;
+    }
+    try {
+      setLoading(true);
+      await submitMembership(type, { ...formData, applicationType }, paymentInfo, files);
+      toast({
+        title: "Request submitted",
+        description: "We will verify your payment and update you shortly.",
+      });
+      setFormData({
+        fullName: "",
+        dateOfBirth: "",
+        gender: "",
+        mobile: "",
+        email: "",
+        city: "",
+        state: "",
+        country: "",
+        profession: "",
+        organization: "",
+        department: "",
+        experience: "",
+        authorityName: "",
+        registrationNumber: "",
+        registrationValidity: "",
+        eligibility1: false,
+        eligibility2: false,
+        eligibility3: false,
+        gartMembershipNumber: "",
+        previousExpiryDate: "",
+        declaration: false,
+      });
+      setStep("form");
+      setQuote(null);
+      setPaymentInfo({ transactionId: "", paidAt: "", payerName: "", screenshotUrl: "" });
+      setFiles({ professionalPhoto: null, registrationCertificate: null, renewalCertificate: null });
+      setApplicationType("fresh");
+      navigate("/dashboard");
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Failed to submit request";
+      setError(message);
+      toast({ title: "Submission failed", description: message, variant: "destructive" });
+    } finally {
+      setLoading(false);
+    }
   };
 
   const eligibilityLabels = type === "allied" ? [
@@ -453,6 +859,20 @@ const ProfessionalRegistrationForm = ({ type }: { type: "allied" | "therapist" }
 
   return (
     <form onSubmit={handleSubmit} className="space-y-8">
+      {step === "payment" && quote ? (
+        <PaymentSection
+          quote={quote}
+          paymentInfo={paymentInfo}
+          setPaymentInfo={setPaymentInfo}
+          onBack={() => setStep("form")}
+          onSubmit={handlePaymentSubmit}
+          loading={loading}
+          error={error}
+        />
+      ) : null}
+
+      {step === "form" ? (
+        <>
       {/* Section A: Application Type */}
       <div className="space-y-4">
         <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
@@ -507,7 +927,12 @@ const ProfessionalRegistrationForm = ({ type }: { type: "allied" | "therapist" }
           </div>
           <div>
             <label className="block text-sm font-medium text-foreground mb-1">Email Address *</label>
-            <input type="email" name="email" value={formData.email} onChange={handleChange} required
+            <input
+              type="email"
+              name="email"
+              value={formData.email}
+              readOnly
+              required
               className="w-full px-4 py-2.5 rounded-lg border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50" />
           </div>
           <div>
@@ -611,13 +1036,28 @@ const ProfessionalRegistrationForm = ({ type }: { type: "allied" | "therapist" }
         <div className="grid sm:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-foreground mb-1">Passport Size Photograph *</label>
-            <input type="file" accept=".jpg,.jpeg,.png" required
+            <input
+              type="file"
+              accept=".jpg,.jpeg,.png"
+              required
+              onChange={(event) =>
+                setFiles((prev) => ({ ...prev, professionalPhoto: event.target.files?.[0] || null }))
+              }
               className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground text-sm file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-primary/10 file:text-primary file:font-medium" />
             <p className="text-xs text-muted-foreground mt-1">JPG / PNG format</p>
           </div>
           <div>
             <label className="block text-sm font-medium text-foreground mb-1">Registration Certificate *</label>
-            <input type="file" accept=".jpg,.jpeg,.png,.pdf" required
+            <input
+              type="file"
+              accept=".jpg,.jpeg,.png,.pdf"
+              required
+              onChange={(event) =>
+                setFiles((prev) => ({
+                  ...prev,
+                  registrationCertificate: event.target.files?.[0] || null,
+                }))
+              }
               className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground text-sm file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-primary/10 file:text-primary file:font-medium" />
             <p className="text-xs text-muted-foreground mt-1">PDF / JPG / PNG format</p>
           </div>
@@ -644,7 +1084,15 @@ const ProfessionalRegistrationForm = ({ type }: { type: "allied" | "therapist" }
             </div>
             <div className="sm:col-span-2">
               <label className="block text-sm font-medium text-foreground mb-1">Previous GART Membership Certificate (Optional)</label>
-              <input type="file" accept=".jpg,.jpeg,.png,.pdf"
+              <input
+                type="file"
+                accept=".jpg,.jpeg,.png,.pdf"
+                onChange={(event) =>
+                  setFiles((prev) => ({
+                    ...prev,
+                    renewalCertificate: event.target.files?.[0] || null,
+                  }))
+                }
                 className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground text-sm file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-primary/10 file:text-primary file:font-medium" />
             </div>
           </div>
@@ -692,18 +1140,31 @@ const ProfessionalRegistrationForm = ({ type }: { type: "allied" | "therapist" }
           Declaration
         </h3>
         <label className="flex items-start gap-3 cursor-pointer">
-          <input type="checkbox" name="declaration" checked={formData.declaration} onChange={handleChange} required
-            className="mt-1 w-4 h-4" />
+          <input
+            type="checkbox"
+            name="declaration"
+            checked={formData.declaration}
+            onChange={handleChange}
+            required
+            className="mt-1 w-4 h-4"
+          />
           <span className="text-sm text-muted-foreground">
-            I confirm that I meet all eligibility criteria and that the information provided is {type === "allied" ? "accurate and verifiable" : "true and verifiable"}.
+            I confirm that I meet all eligibility criteria and that the information provided is{" "}
+            {type === "allied" ? "accurate and verifiable" : "true and verifiable"}. I agree to the{" "}
+            <a href="/terms" className="text-primary underline">
+              Terms &amp; Conditions
+            </a>
+            .
           </span>
         </label>
       </div>
 
-      <Button type="submit" size="lg" className="w-full group">
-        Proceed to Payment
+      <Button type="submit" size="lg" className="w-full group" disabled={loading}>
+        {loading ? "Preparing..." : "Proceed to Payment"}
         <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
       </Button>
+      </>
+      ) : null}
     </form>
   );
 };
@@ -711,6 +1172,7 @@ const ProfessionalRegistrationForm = ({ type }: { type: "allied" | "therapist" }
 // Volunteer Registration Form Component
 const VolunteerRegistrationForm = () => {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     fullName: "",
     dateOfBirth: "",
@@ -725,6 +1187,16 @@ const VolunteerRegistrationForm = () => {
     areasOfInterest: [] as string[],
     declaration: false
   });
+  const [step, setStep] = useState<"form" | "payment">("form");
+  const [quote, setQuote] = useState<PaymentQuote | null>(null);
+  const [paymentInfo, setPaymentInfo] = useState<PaymentInfo>({
+    transactionId: "",
+    paidAt: "",
+    payerName: "",
+    screenshotUrl: "",
+  });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const isLMIC = lmicCountries.includes(formData.country);
   const isIndia = formData.country === "India";
@@ -743,16 +1215,90 @@ const VolunteerRegistrationForm = () => {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    toast({
-      title: "Application Submitted!",
-      description: "Redirecting to payment gateway...",
-    });
+    if (step === "payment") return;
+    setError("");
+    try {
+      setLoading(true);
+      const payload = await quoteMembership("volunteer", formData);
+      setQuote(payload);
+      setStep("payment");
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Failed to prepare payment";
+      setError(message);
+      toast({ title: "Could not calculate fee", description: message, variant: "destructive" });
+      if (message.includes("Active membership already exists") || message.includes("already pending")) {
+        toast({
+          title: "Membership exists",
+          description: "Redirecting to your dashboard...",
+        });
+        setTimeout(() => {
+          window.location.href = "/dashboard";
+        }, 2000);
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handlePaymentSubmit = async () => {
+    setError("");
+    if (!paymentInfo.transactionId || !paymentInfo.paidAt) {
+      setError("Transaction ID and paid date are required.");
+      return;
+    }
+    try {
+      setLoading(true);
+      await submitMembership("volunteer", formData, paymentInfo, files);
+      toast({
+        title: "Request submitted",
+        description: "We will verify your payment and update you shortly.",
+      });
+      setFormData({
+        fullName: "",
+        dateOfBirth: "",
+        gender: "",
+        mobile: "",
+        email: "",
+        city: "",
+        state: "",
+        country: "",
+        occupation: "",
+        organization: "",
+        areasOfInterest: [] as string[],
+        declaration: false,
+      });
+      setStep("form");
+      setQuote(null);
+      setPaymentInfo({ transactionId: "", paidAt: "", payerName: "", screenshotUrl: "" });
+      setFiles({ volunteerPhoto: null, nationalId: null });
+      navigate("/dashboard");
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Failed to submit request";
+      setError(message);
+      toast({ title: "Submission failed", description: message, variant: "destructive" });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-8">
+      {step === "payment" && quote ? (
+        <PaymentSection
+          quote={quote}
+          paymentInfo={paymentInfo}
+          setPaymentInfo={setPaymentInfo}
+          onBack={() => setStep("form")}
+          onSubmit={handlePaymentSubmit}
+          loading={loading}
+          error={error}
+        />
+      ) : null}
+
+      {step === "form" ? (
+        <>
       {/* Section A: Personal Details */}
       <div className="space-y-4">
         <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
@@ -787,7 +1333,12 @@ const VolunteerRegistrationForm = () => {
           </div>
           <div>
             <label className="block text-sm font-medium text-foreground mb-1">Email Address *</label>
-            <input type="email" name="email" value={formData.email} onChange={handleChange} required
+            <input
+              type="email"
+              name="email"
+              value={formData.email}
+              readOnly
+              required
               className="w-full px-4 py-2.5 rounded-lg border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50" />
           </div>
           <div>
@@ -837,13 +1388,25 @@ const VolunteerRegistrationForm = () => {
         <div className="grid sm:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-foreground mb-1">Passport Size Photograph *</label>
-            <input type="file" accept=".jpg,.jpeg,.png" required
+            <input
+              type="file"
+              accept=".jpg,.jpeg,.png"
+              required
+              onChange={(event) =>
+                setFiles((prev) => ({ ...prev, volunteerPhoto: event.target.files?.[0] || null }))
+              }
               className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground text-sm file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-primary/10 file:text-primary file:font-medium" />
             <p className="text-xs text-muted-foreground mt-1">JPG / PNG format</p>
           </div>
           <div>
             <label className="block text-sm font-medium text-foreground mb-1">National Identity Card *</label>
-            <input type="file" accept=".jpg,.jpeg,.png,.pdf" required
+            <input
+              type="file"
+              accept=".jpg,.jpeg,.png,.pdf"
+              required
+              onChange={(event) =>
+                setFiles((prev) => ({ ...prev, nationalId: event.target.files?.[0] || null }))
+              }
               className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground text-sm file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-primary/10 file:text-primary file:font-medium" />
             <p className="text-xs text-muted-foreground mt-1">PDF / JPG / PNG format</p>
           </div>
@@ -890,18 +1453,31 @@ const VolunteerRegistrationForm = () => {
           Declaration
         </h3>
         <label className="flex items-start gap-3 cursor-pointer">
-          <input type="checkbox" name="declaration" checked={formData.declaration} onChange={handleChange} required
-            className="mt-1 w-4 h-4" />
+          <input
+            type="checkbox"
+            name="declaration"
+            checked={formData.declaration}
+            onChange={handleChange}
+            required
+            className="mt-1 w-4 h-4"
+          />
           <span className="text-sm text-muted-foreground">
             I am willing to support GART's educational, social, advocacy, and outreach initiatives. The information provided is true and accurate.
+            I agree to the{" "}
+            <a href="/terms" className="text-primary underline">
+              Terms &amp; Conditions
+            </a>
+            .
           </span>
         </label>
       </div>
 
-      <Button type="submit" size="lg" className="w-full group">
-        Proceed to Payment
+      <Button type="submit" size="lg" className="w-full group" disabled={loading}>
+        {loading ? "Preparing..." : "Proceed to Payment"}
         <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
       </Button>
+      </>
+      ) : null}
     </form>
   );
 };

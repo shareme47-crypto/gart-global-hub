@@ -1,14 +1,30 @@
-import { useState } from "react";
+
 import { Menu, X, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import gartLogo from "@/assets/gart-logo-new.jpeg";
+import { useEffect, useState } from "react";
 
 const Navbar = () => {
+  const [currentUser, setCurrentUser] = useState<{ roles?: string[]; email?: string } | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const location = useLocation();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const loadUser = () => {
+      const raw = localStorage.getItem("gart_user");
+      setCurrentUser(raw ? JSON.parse(raw) : null);
+    };
+    loadUser();
+    window.addEventListener("auth:changed", loadUser);
+    window.addEventListener("storage", loadUser);
+    return () => {
+      window.removeEventListener("auth:changed", loadUser);
+      window.removeEventListener("storage", loadUser);
+    };
+  }, []);
 
   const navLinks = [
     { label: "Home", href: "/" },
@@ -16,6 +32,8 @@ const Navbar = () => {
       label: "Membership", 
       dropdown: [
         { label: "Join GART", href: "/signup" },
+        { label: "Create Account", href: "/register" },
+        { label: "Member Login", href: "/login" },
         { label: "Member Benefits", href: "/member-benefits" },
       ]
     },
@@ -33,6 +51,17 @@ const Navbar = () => {
     { label: "Advocacy", href: "/advocacy" },
     { label: "Contact", href: "/contact" },
   ];
+
+  const isAdmin = currentUser?.roles?.includes("admin");
+
+  const handleLogout = () => {
+    localStorage.removeItem("gart_access_token");
+    localStorage.removeItem("gart_refresh_token");
+    localStorage.removeItem("gart_session_id");
+    localStorage.removeItem("gart_user");
+    window.dispatchEvent(new Event("auth:changed"));
+    navigate("/");
+  };
 
   const isActive = (href: string) => {
     if (href === "/") return location.pathname === "/" && !location.hash;
@@ -137,6 +166,40 @@ const Navbar = () => {
             ))}
           </div>
 
+          <div className="hidden xl:flex items-center gap-4 ml-4">
+            {currentUser ? (
+              <>
+                {isAdmin ? (
+                  <Link
+                    to="/admin/dashboard"
+                    className="text-sm font-semibold text-foreground hover:text-primary transition-colors"
+                  >
+                    Admin Dashboard
+                  </Link>
+                ) : (
+                  <Link
+                    to="/dashboard"
+                    className="text-sm font-semibold text-foreground hover:text-primary transition-colors"
+                  >
+                    Dashboard
+                  </Link>
+                )}
+                <Button variant="outline" className="rounded-full px-5" onClick={handleLogout}>
+                  Logout
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button variant="outline" className="rounded-full px-5" asChild>
+                  <Link to="/login">Login</Link>
+                </Button>
+                <Button variant="default" className="rounded-full px-5" asChild>
+                  <Link to="/register">Sign Up</Link>
+                </Button>
+              </>
+            )}
+          </div>
+
           {/* Mobile Menu Button */}
           <button
             className="xl:hidden p-2 text-foreground"
@@ -184,6 +247,57 @@ const Navbar = () => {
                   </div>
                 )
               ))}
+              <div className="pt-2 border-t border-border">
+                {currentUser ? (
+                  <>
+                    {isAdmin
+                      ? renderLink(
+                          "/admin/dashboard",
+                          "Admin Dashboard",
+                          "text-foreground hover:text-primary font-medium transition-colors py-2 block",
+                          () => setIsOpen(false)
+                        )
+                      : renderLink(
+                          "/dashboard",
+                          "Dashboard",
+                          "text-foreground hover:text-primary font-medium transition-colors py-2 block",
+                          () => setIsOpen(false)
+                        )}
+                    <button
+                      className="text-foreground hover:text-primary font-medium transition-colors py-2 block text-left"
+                      onClick={() => {
+                        setIsOpen(false);
+                        handleLogout();
+                      }}
+                    >
+                      Logout
+                    </button>
+                    {isAdmin
+                      ? renderLink(
+                          "/admin/dashboard",
+                          "Admin",
+                          "text-foreground hover:text-primary font-medium transition-colors py-2 block",
+                          () => setIsOpen(false)
+                        )
+                      : null}
+                  </>
+                ) : (
+                  <>
+                    {renderLink(
+                      "/login",
+                      "Login",
+                      "text-foreground hover:text-primary font-medium transition-colors py-2 block",
+                      () => setIsOpen(false)
+                    )}
+                    {renderLink(
+                      "/register",
+                      "Sign Up",
+                      "text-foreground hover:text-primary font-medium transition-colors py-2 block",
+                      () => setIsOpen(false)
+                    )}
+                  </>
+                )}
+              </div>
             </div>
           </div>
         )}

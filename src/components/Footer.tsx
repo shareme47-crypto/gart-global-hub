@@ -15,6 +15,7 @@ const Footer = () => {
     { label: "News", href: "/news" },
     { label: "Events", href: "/events" },
     { label: "Join GART", href: "/signup" },
+    { label: "Member Login", href: "/login" },
     { label: "Career Center", href: "/jobs" },
   ];
 
@@ -72,6 +73,7 @@ const Footer = () => {
                   ) : (
                     <Link
                       to={link.href}
+                      onClick={() => window.scrollTo({ top: 0, left: 0, behavior: "auto" })}
                       className="text-background/70 hover:text-secondary transition-colors duration-300 text-sm"
                     >
                       {link.label}
@@ -98,6 +100,7 @@ const Footer = () => {
                   ) : (
                     <Link
                       to={link.href}
+                      onClick={() => window.scrollTo({ top: 0, left: 0, behavior: "auto" })}
                       className="text-background/70 hover:text-secondary transition-colors duration-300 text-sm"
                     >
                       {link.label}
@@ -150,12 +153,12 @@ const Footer = () => {
               © {new Date().getFullYear()} Global Association of Radiation Therapists. All rights reserved.
             </p>
             <div className="flex gap-6">
-              <a href="#" className="text-background/50 hover:text-secondary text-sm transition-colors">
+              <Link to="/privacy" className="text-background/50 hover:text-secondary text-sm transition-colors">
                 Privacy Policy
-              </a>
-              <a href="#" className="text-background/50 hover:text-secondary text-sm transition-colors">
-                Terms of Service
-              </a>
+              </Link>
+              <Link to="/terms" className="text-background/50 hover:text-secondary text-sm transition-colors">
+                Terms & Conditions
+              </Link>
             </div>
           </div>
         </div>
